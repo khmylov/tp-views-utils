@@ -8,11 +8,12 @@ export default app => {
               <title>Targetprocess view utils</title>
             </head>
             <body>
-              <div id="rootElement">Hello there</div>
+              <div id="rootElement">Loading..</div>
+              <script type="text/javascript" src="static/frontend.js"></script>
             </body>
           </html>
         `;
-        
+
         res.end(HTML);
     });
 }
