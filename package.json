@@ -1,0 +1,16 @@
+{
+  "name": "tp-views-utils",
+  "dependencies": {
+    "express": "^4.13.4"
+  },
+  "devDependencies": {
+    "babel-core": "^6.4.5",
+    "babel-loader": "^6.2.2",
+    "babel-preset-es2015": "^6.3.13",
+    "babel-preset-react": "^6.3.13",
+    "webpack": "^1.12.13"
+  },
+  "scripts": {
+    "start": "webpack && node build/backend.js"
+  }
+}
