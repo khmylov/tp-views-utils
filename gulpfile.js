@@ -12,15 +12,22 @@ var deepmerge = DeepMerge(function(target, source, key) {
     return source;
 });
 
+const nodeModulesDir = path.resolve(__dirname, 'node_modules');
+
 // generic
 
 var defaultConfig = {
     module: {
         loaders: [
             {
+                test: /\.json?$/,
+                loader: 'json-loader',
+                exclude: nodeModulesDir
+            },
+            {
                 test: /\.js?$/,
                 loader: 'babel-loader',
-                exclude: path.resolve(__dirname, 'node_modules'),
+                exclude: nodeModulesDir,
                 query: {
                     presets: ['es2015']
                 }
@@ -50,7 +57,7 @@ var frontendConfig = config({
             {
                 test: /\.jsx?$/,
                 loader: 'babel-loader',
-                exclude: path.resolve(__dirname, 'node_modules'),
+                exclude: nodeModulesDir,
                 query: {
                     presets: ['es2015', 'react']
                 }
