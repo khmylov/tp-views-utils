@@ -5,6 +5,9 @@ var webpack = require('webpack');
 var nodemon = require('nodemon');
 var DeepMerge = require('deep-merge');
 
+var webpackPostcssTools = require('webpack-postcss-tools');
+var ExtractTextPlugin = require("extract-text-webpack-plugin");
+
 var deepmerge = DeepMerge(function(target, source, key) {
     if(target instanceof Array) {
         return [].concat(target, source);
@@ -46,8 +49,9 @@ function config(overrides) {
 }
 
 // frontend
+
 var frontendConfig = config({
-    entry: './client/client-main.js',
+    entry: ['./client/client-main.js'],
     output: {
         path: path.join(__dirname, 'build/static'),
         filename: 'frontend.js'
@@ -55,7 +59,11 @@ var frontendConfig = config({
     module: {
         loaders: [
             {
-                test: /\.jsx?$/,
+                test: /\.css$/,
+                loader: 'style!css'
+            },
+            {
+                test: /\.jsx$/,
                 loader: 'babel-loader',
                 exclude: nodeModulesDir,
                 query: {

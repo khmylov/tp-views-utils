@@ -11,8 +11,8 @@ const ViewItem = React.createClass({
     render() {
         const {model, isCurrent} = this.props;
         const itemClassName = classNames({
-            'view-item': true,
-            'view-item--selected': isCurrent
+            'copyCardSettings__view-tree__view-item': true,
+            'active': isCurrent
         });
 
         return (
@@ -48,19 +48,12 @@ const ViewGroup = React.createClass({
 });
 
 export default React.createClass({
-    getInitialState() {
-        return {
-            currentViewId: null
-        };
-    },
-
     _setViewAsCurrent(viewId) {
-        this.setState({currentViewId: viewId});
+        this.props.setViewAsCurrent(viewId);
     },
 
     render() {
-        const {currentViewId} = this.state;
-        const {model} = this.props;
+        const {currentViewId, model} = this.props;
         const viewGroups = model.groupModels.map(m =>
             <ViewGroup
                 key={m.key}
@@ -71,6 +64,9 @@ export default React.createClass({
 
         return (
             <div>
+                <div className="copyCardSettings__view-tree-header">
+                    Pick a view to copy card settings from:
+                </div>
                 {viewGroups}
             </div>
         );

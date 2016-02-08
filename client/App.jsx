@@ -1,26 +1,18 @@
 import React from 'react'
-
-
-import ViewTreeView from './views/viewTree.jsx';
-import LoadingStateWrapper from './views/loadingStateWrapper.jsx';
+import {Link} from 'react-router'
+import routes from './routes'
 
 export default React.createClass({
-    _loadData() {
-        return this.props.model.loadAllViews();
-    },
-
     render() {
         return (
             <div>
-                <LoadingStateWrapper
-                    load={this._loadData}
-                    createChildren={this._renderChildren} />
+                <h1>App</h1>
+                <ul>
+                    <li><Link to={'/' + routes.copyCardSettings}>Copy card settings</Link></li>
+                </ul>
+
+                {this.props.children}
             </div>
         );
-    },
-
-    _renderChildren() {
-        const {model} = this.props;
-        return <ViewTreeView model={model} />;
     }
 })

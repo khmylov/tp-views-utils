@@ -1,6 +1,21 @@
 import React from 'react'
 
 export default React.createClass({
+    displayName: 'loadingStateWrapper',
+
+    getDefaultProps() {
+        return {
+            loadingText: 'Loading...',
+            renderErrorMessage(failureMessage) {
+                const displayMessage = `Error occurred: ${failureMessage}`;
+                return <div>{displayMessage}</div>
+            },
+            createChildren() {
+                return null;
+            }
+        };
+    },
+
     getInitialState() {
         return {
             isLoading: true,
@@ -39,13 +54,14 @@ export default React.createClass({
 
     _renderContent() {
         const {isLoaded, failureMessage} = this.state;
+        const {loadingText, renderErrorMessage} = this.props;
+
         if (!isLoaded) {
-            return <div>Loading...</div>;
+            return <div>{loadingText}</div>;
         }
 
         if (failureMessage && failureMessage.length) {
-            const displayMessage = `Error occurred: ${failureMessage}`;
-            return <div>{displayMessage}</div>;
+            return renderErrorMessage(failureMessage);
         }
 
         return this.props.createChildren();

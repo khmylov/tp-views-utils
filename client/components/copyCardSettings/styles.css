@@ -1,0 +1,32 @@
+.copyCardSettings {
+
+}
+
+.copyCardSettings__view-details-container {
+  margin-top: 20px;
+  padding-top: 10px;
+}
+
+.copyCardSettings__view-tree-header {
+  margin-bottom: 10px;
+}
+
+.copyCardSettings__view-tree__view-item {
+  cursor: pointer;
+}
+
+.copyCardSettings__view-tree__view-item.active {
+  font-weight: bold;
+}
+
+.copyCardSettings__view-details__view-info {
+  margin-bottom: 10px;
+}
+
+.copyCardSettings__view-details__target-list {
+
+}
+
+.copyCardSettings__log {
+
+}

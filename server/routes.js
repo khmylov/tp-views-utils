@@ -6,24 +6,6 @@ import TpViewsApi from './tp-api/views'
 import defaultTargetConfig from './tp-api/defaultTarget.private.json'
 
 export default app => {
-    app.get('/', (req, res) => {
-        const HTML = `
-          <!DOCTYPE html>
-          <html>
-            <head>
-              <meta charset="utf-8">
-              <title>Targetprocess view utils</title>
-            </head>
-            <body>
-              <div id="rootElement">Loading..</div>
-              <script type="text/javascript" src="static/frontend.js"></script>
-            </body>
-          </html>
-        `;
-
-        res.end(HTML);
-    });
-
     app.get('/api/views/', (req, res) => {
         const target = new TpTarget(defaultTargetConfig);
         const api = new TpViewsApi(target);
@@ -52,5 +34,23 @@ export default app => {
                 console.error(req.url, 'createOrUpdateView() failed', e);
                 res.sendStatus(500);
             });
+    });
+
+    app.get('*', (req, res) => {
+        const HTML = `
+          <!DOCTYPE html>
+          <html>
+            <head>
+              <meta charset="utf-8">
+              <title>Targetprocess view utils</title>
+            </head>
+            <body>
+              <div id="rootElement">Loading..</div>
+              <script type="text/javascript" src="static/frontend.js"></script>
+            </body>
+          </html>
+        `;
+
+        res.end(HTML);
     });
 }

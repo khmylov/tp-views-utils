@@ -1,6 +1,8 @@
-import _ from 'lodash'
-import Api from './api'
+import _ from 'lodash';
+import $ from 'jquery';
 import Immutable from 'immutable';
+import Api from '../../../services/tp-views-api';
+import Log from './log';
 
 class ViewModel {
     constructor({key, name}) {
@@ -10,10 +12,11 @@ class ViewModel {
 }
 
 class ViewGroupModel {
-    constructor({itemData, children}) {
+    constructor({itemData, children}, log) {
         const {key, name} = itemData;
         this.name = name;
         this.key = key;
+        this._log = log;
 
         this.children = Immutable
             .Seq(children)
@@ -30,6 +33,7 @@ class ViewTreeModel {
     constructor() {
         this._api = new Api();
         this.groupModels = [];
+        this.log = new Log();
     }
 
     loadAllViews() {
@@ -44,8 +48,19 @@ class ViewTreeModel {
             });
     }
 
+    getAllViews() {
+        return this.groupModels
+            .flatMap(g => g.children);
+    }
+
+    copyCardSettings(fromViewId, toViewIds) {
+        var def = $.Deferred();
+        setTimeout(() => def.resolve(), 2000);
+        return def.promise();
+    }
+
     static _createGroupModel(groupDto) {
-        return new ViewGroupModel(groupDto);
+        return new ViewGroupModel(groupDto, this.log);
     }
 }
 
