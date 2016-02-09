@@ -5,9 +5,6 @@ var webpack = require('webpack');
 var nodemon = require('nodemon');
 var DeepMerge = require('deep-merge');
 
-var webpackPostcssTools = require('webpack-postcss-tools');
-var ExtractTextPlugin = require("extract-text-webpack-plugin");
-
 var deepmerge = DeepMerge(function(target, source, key) {
     if(target instanceof Array) {
         return [].concat(target, source);
@@ -15,24 +12,25 @@ var deepmerge = DeepMerge(function(target, source, key) {
     return source;
 });
 
-const nodeModulesDir = path.resolve(__dirname, 'node_modules');
+const globalExclude = /node_modules/;
 
 // generic
 
 var defaultConfig = {
+    resolve: { extensions: [ '', '.js' ] },
     module: {
         loaders: [
             {
                 test: /\.json?$/,
                 loader: 'json-loader',
-                exclude: nodeModulesDir
+                exclude: globalExclude
             },
             {
-                test: /\.js?$/,
+                test: /\.jsx?$/,
                 loader: 'babel-loader',
-                exclude: nodeModulesDir,
+                exclude: globalExclude,
                 query: {
-                    presets: ['es2015']
+                    presets: ['es2015', 'react']
                 }
             }
         ]
@@ -51,24 +49,21 @@ function config(overrides) {
 // frontend
 
 var frontendConfig = config({
-    entry: ['./client/client-main.js'],
+    entry: ['./client/client-main.js', 'bootstrap-loader'],
     output: {
         path: path.join(__dirname, 'build/static'),
         filename: 'frontend.js'
     },
     module: {
         loaders: [
+            { test: /bootstrap-sass\/assets\/javascripts\//, loader: 'imports?jQuery=jquery' },
+            {test: /\.(woff|woff2)(\?v=\d+\.\d+\.\d+)?$/, loader: 'url?limit=10000&mimetype=application/font-woff'},
+            {test: /\.ttf(\?v=\d+\.\d+\.\d+)?$/, loader: 'url?limit=10000&mimetype=application/octet-stream'},
+            {test: /\.eot(\?v=\d+\.\d+\.\d+)?$/, loader: 'file'},
+            {test: /\.svg(\?v=\d+\.\d+\.\d+)?$/, loader: 'url?limit=10000&mimetype=image/svg+xml'},
             {
                 test: /\.css$/,
                 loader: 'style!css'
-            },
-            {
-                test: /\.jsx$/,
-                loader: 'babel-loader',
-                exclude: nodeModulesDir,
-                query: {
-                    presets: ['es2015', 'react']
-                }
             }
         ]
     }

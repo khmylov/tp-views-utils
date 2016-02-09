@@ -4,6 +4,8 @@ import {render} from 'react-dom'
 
 import './css/main.css'
 
+import 'expose?$!expose?jQuery!jquery';
+
 import routes from './routes'
 import App from './App.jsx'
 
