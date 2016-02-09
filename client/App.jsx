@@ -6,12 +6,35 @@ export default React.createClass({
     render() {
         return (
             <div>
-                <h1>App</h1>
-                <ul>
-                    <li><Link to={'/' + routes.copyCardSettings}>Copy card settings</Link></li>
-                </ul>
+                <nav className="navbar navbar-inverse navbar-fixed-top">
+                    <div className="container">
+                        <div className="navbar-header">
+                            <button
+                                type="button"
+                                className="navbar-toggle collapsed"
+                                data-toggle="collapse"
+                                data-target="#navbar"
+                                aria-expanded="false"
+                                aria-controls="navbar">
 
-                {this.props.children}
+                            </button>
+                            <Link to="/" className="navbar-brand">TP Views</Link>
+                        </div>
+                        <div id="navbar" className="navbar-collapse collapse">
+                            <ul className="nav navbar-nav">
+                                <li>
+                                    <Link
+                                        to={'/' + routes.copyCardSettings}>
+                                        Copy card settings
+                                    </Link>
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+                </nav>
+                <div className="container">
+                    {this.props.children}
+                </div>
             </div>
         );
     }

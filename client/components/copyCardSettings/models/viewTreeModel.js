@@ -53,6 +53,12 @@ class ViewTreeModel {
             .flatMap(g => g.children);
     }
 
+    getViewById(viewId) {
+        return this
+            .getAllViews()
+            .find(v => v.key === viewId);
+    }
+
     copyCardSettings(fromViewId, toViewIds) {
         var def = $.Deferred();
         setTimeout(() => def.resolve(), 2000);

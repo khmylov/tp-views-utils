@@ -37,13 +37,15 @@ export default React.createClass({
 
     _renderChildren() {
         return (
-            <div className="copyCardSettings">
-                {this._renderViewSelector()}
-                <div className="copyCardSettings__view-details-container">
+            <div className="row">
+                <div className="col-sm-2 sidebar">
+                    {this._renderViewSelector()}
+                </div>
+                <div className="col-sm-10">
                     {this._renderViewDetails()}
                 </div>
             </div>
-        )
+        );
     },
 
     _renderViewSelector() {

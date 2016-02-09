@@ -17,14 +17,16 @@ const SelectableView = React.createClass({
     },
     render() {
         return (
-            <label>
-                <input
-                    type="checkbox"
-                    checked={this.props.isSelected}
-                    onChange={this._onChange}/>
-                {this.props.name}
-            </label>
-        )
+            <div className="checkbox">
+                <label>
+                    <input
+                        type="checkbox"
+                        checked={this.props.isSelected}
+                        onChange={this._onChange}/>
+                    {this.props.name}
+                </label>
+            </div>
+        );
     }
 });
 
@@ -62,6 +64,13 @@ const ViewTargetSelector = React.createClass({
                 {viewItems}
             </div>
         );
+    }
+});
+
+const CurrentViewInfo = React.createClass({
+    displayName: 'currentViewInfo',
+    render() {
+        return null;
     }
 });
 
@@ -103,23 +112,32 @@ const DetailsView = React.createClass({
     },
 
     render() {
-        const {model} = this.props;
+        const {model, currentViewId} = this.props;
         const viewModels = model.getAllViews();
+        const currentView = model.getViewById(currentViewId);
+        if (!currentView) {
+            return <div>Unable to get view info</div>;
+        }
 
         return (
-            <div className="copyCardSettings__view-details">
-                <div className="copyCardSettings__view-details__view-info">
-                    This view has the following settings: (TODO)
-                </div>
+            <div>
+                <p>
+                    <span><strong>{currentView.name}</strong></span>
+                    <br />
+                    <span>This view has the following settings: (TODO)</span>
+                </p>
 
                 <div>
                     Choose a set of views to apply the settings to:
                 </div>
-                <ViewTargetSelector
-                    views={viewModels}
-                    selectedViewIds={this.state.selectedViewIds}
-                    onSelectedViewIdsChanged={this._onSelectedViewIdsChanged}/>
-                {this._renderApplyButton()}
+
+                <form>
+                    <ViewTargetSelector
+                        views={viewModels}
+                        selectedViewIds={this.state.selectedViewIds}
+                        onSelectedViewIdsChanged={this._onSelectedViewIdsChanged}/>
+                    {this._renderApplyButton()}
+                </form>
             </div>
         )
     },
@@ -133,6 +151,7 @@ const DetailsView = React.createClass({
 
         return (
             <button
+                className="btn btn-primary"
                 disabled={isRunningBatchUpdate}
                 onClick={this._onRunBatchUpdate}>
                 Apply
