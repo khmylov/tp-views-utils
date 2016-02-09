@@ -5,13 +5,15 @@ export default React.createClass({
     displayName: 'copyCardSettingsLog',
 
     propTypes: {
-        onLogAppend: T.object.isRequired
+        onLogAppend: T.object.isRequired,
+        rows: T.string,
+        className: T.string
     },
 
     _onLogAppend({message}) {
         const output = this.refs.output;
         output.value += message;
-        ouput.value += '\n';
+        output.value += '\n';
     },
 
     componentDidMount() {
@@ -27,9 +29,13 @@ export default React.createClass({
     },
 
     render() {
+        const {className, rows} = this.props;
         return (
             <div>
-                <textarea ref="output" />
+                <textarea
+                    className={className}
+                    rows={rows}
+                    ref="output" />
             </div>
         )
     }

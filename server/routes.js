@@ -36,7 +36,7 @@ export default app => {
             });
     });
 
-    app.get('*', (req, res) => {
+    app.get('/', (req, res) => {
         const HTML = `
           <!DOCTYPE html>
           <html>

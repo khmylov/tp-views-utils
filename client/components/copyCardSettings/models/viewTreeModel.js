@@ -61,8 +61,14 @@ class ViewTreeModel {
 
     copyCardSettings(fromViewId, toViewIds) {
         var def = $.Deferred();
-        setTimeout(() => def.resolve(), 2000);
-        return def.promise();
+        const log = this.log;
+        log.append(`Started copying ${fromViewId} to ${toViewIds.join(', ')}`);
+        setTimeout(() => log.append('First completed'), 1000);
+        setTimeout(() => log.append('Second completed'), 2000);
+
+        setTimeout(() => def.resolve(), 3000);
+        return def
+            .then(() => log.append('All done'));
     }
 
     static _createGroupModel(groupDto) {

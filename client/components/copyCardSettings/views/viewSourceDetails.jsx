@@ -3,76 +3,10 @@ import _ from 'lodash';
 import LoadingStateWrapper from '../../../views/loadingStateWrapper.jsx';
 import Immutable from 'immutable';
 
+import ViewTargetSelector from './viewTargetSelector.jsx';
+import UpdateProgress from './updateProgress.jsx';
+
 const T = React.PropTypes;
-
-const SelectableView = React.createClass({
-    displayName: 'selectableViewItem',
-    propTypes: {
-        viewId: T.string.isRequired,
-        onChange: T.func.isRequired
-    },
-    _onChange(e) {
-        const isChecked = e.target.checked;
-        this.props.onChange(this.props.viewId, isChecked);
-    },
-    render() {
-        return (
-            <div className="checkbox">
-                <label>
-                    <input
-                        type="checkbox"
-                        checked={this.props.isSelected}
-                        onChange={this._onChange}/>
-                    {this.props.name}
-                </label>
-            </div>
-        );
-    }
-});
-
-const ViewTargetSelector = React.createClass({
-    displayName: 'viewTargetSelector',
-
-    propTypes: {
-        selectedViewIds: T.instanceOf(Immutable.Set).isRequired,
-        onSelectedViewIdsChanged: T.func.isRequired,
-        views: T.instanceOf(Immutable.Iterable).isRequired
-    },
-
-    _toggleSelectedView(viewId, isSelected) {
-        const {selectedViewIds, onSelectedViewIdsChanged} = this.props;
-        const newIds = isSelected ?
-            selectedViewIds.add(viewId) :
-            selectedViewIds.delete(viewId);
-
-        onSelectedViewIdsChanged(newIds);
-    },
-
-    render() {
-        const {selectedViewIds, views} = this.props;
-        const viewItems = views.map(v => (
-            <SelectableView
-                key={v.key}
-                viewId={v.key}
-                name={v.name}
-                isSelected={selectedViewIds.has(v.key)}
-                onChange={this._toggleSelectedView}/>
-        ));
-
-        return (
-            <div className="copyCardSettings__view-details__target-list">
-                {viewItems}
-            </div>
-        );
-    }
-});
-
-const CurrentViewInfo = React.createClass({
-    displayName: 'currentViewInfo',
-    render() {
-        return null;
-    }
-});
 
 const DetailsView = React.createClass({
     displayName: 'viewSourceDetails',
@@ -93,7 +27,10 @@ const DetailsView = React.createClass({
         this.setState({selectedViewIds: newIds});
     },
 
-    _onRunBatchUpdate() {
+    _onRunBatchUpdate(e) {
+        e.preventDefault();
+        e.stopPropagation();
+
         const {selectedViewIds, isRunningBatchUpdate} = this.state;
         if (isRunningBatchUpdate) {
             return;
@@ -102,13 +39,10 @@ const DetailsView = React.createClass({
         const {model, currentViewId} = this.props;
 
         this.setState({isRunningBatchUpdate: true});
-        model
-            .copyCardSettings(currentViewId, selectedViewIds)
-            .always(() => {
-                if (this.isMounted()) {
-                    this.setState({isRunningBatchUpdate: false});
-                }
-            })
+        this._startOperation = () => {
+            return model
+                .copyCardSettings(currentViewId, selectedViewIds);
+        };
     },
 
     render() {
@@ -117,6 +51,15 @@ const DetailsView = React.createClass({
         const currentView = model.getViewById(currentViewId);
         if (!currentView) {
             return <div>Unable to get view info</div>;
+        }
+
+        const {isRunningBatchUpdate} = this.state;
+        if (isRunningBatchUpdate) {
+            return (
+                <UpdateProgress
+                    log={model.log}
+                    startOperation={this._startOperation}/>
+            );
         }
 
         return (
@@ -131,7 +74,7 @@ const DetailsView = React.createClass({
                     Choose a set of views to apply the settings to:
                 </div>
 
-                <form>
+                <form onSubmit={this._onRunBatchUpdate}>
                     <ViewTargetSelector
                         views={viewModels}
                         selectedViewIds={this.state.selectedViewIds}
@@ -153,7 +96,7 @@ const DetailsView = React.createClass({
             <button
                 className="btn btn-primary"
                 disabled={isRunningBatchUpdate}
-                onClick={this._onRunBatchUpdate}>
+                type="submit">
                 Apply
             </button>
         );

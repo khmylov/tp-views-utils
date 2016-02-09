@@ -9,15 +9,6 @@ export default React.createClass({
                 <nav className="navbar navbar-inverse navbar-fixed-top">
                     <div className="container">
                         <div className="navbar-header">
-                            <button
-                                type="button"
-                                className="navbar-toggle collapsed"
-                                data-toggle="collapse"
-                                data-target="#navbar"
-                                aria-expanded="false"
-                                aria-controls="navbar">
-
-                            </button>
                             <Link to="/" className="navbar-brand">TP Views</Link>
                         </div>
                         <div id="navbar" className="navbar-collapse collapse">
@@ -32,6 +23,7 @@ export default React.createClass({
                         </div>
                     </div>
                 </nav>
+
                 <div className="container">
                     {this.props.children}
                 </div>

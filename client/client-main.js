@@ -1,5 +1,5 @@
 import React from 'react'
-import {Router} from 'react-router'
+import {Router, Route} from 'react-router'
 import {render} from 'react-dom'
 
 import './css/main.css'
