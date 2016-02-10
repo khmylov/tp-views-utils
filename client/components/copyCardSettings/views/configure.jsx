@@ -6,6 +6,7 @@ import TargetViewsTree from './targetViewList/viewTargetSelector.jsx';
 import CopyOptions from './copyOptions.jsx';
 
 import Transforms from '../models/viewTransforms';
+import Validation from '../models/validation';
 
 const T = React.PropTypes;
 
@@ -26,12 +27,15 @@ export default React.createClass({
         return {
             sourceViewId: null,
             selectedTargetViewIds: Immutable.Set(),
-            enabledOptionIds: Immutable.Set()
+            enabledOptionIds: Immutable.Set.of('units-cells')
         };
     },
 
     _setViewAsCurrent(newViewId) {
-        this.setState({sourceViewId: newViewId});
+        this.setState({
+            sourceViewId: newViewId,
+            selectedTargetViewIds: Immutable.Set()
+        });
     },
 
     _setNewSelectedViewIds(newViewIds) {
@@ -56,6 +60,21 @@ export default React.createClass({
             targetViewIds: selectedTargetViewIds,
             copyOptions: enabledOptionIds
         })
+    },
+
+    _getSourceView() {
+        return Transforms.findViewById(this.props.viewGroups, this.state.sourceViewId);
+    },
+
+    _validateViewForOperation(viewData) {
+        const sourceView = this._getSourceView();
+        if (!sourceView) {
+            return { success: false, message: 'Unable to find source view' };
+        }
+
+        return Validation.validateViewForCopySettings(
+            sourceView.getViewData(), viewData,
+            this.state.enabledOptionIds);
     },
 
     render() {
@@ -133,12 +152,28 @@ export default React.createClass({
     },
 
     _renderTargetViewsSelector() {
-        const views = Transforms.flattenViews(this.props.viewGroups);
+        const {viewGroups} = this.props;
+        const {selectedTargetViewIds, enabledOptionIds} = this.state;
+
+        const sourceView = this._getSourceView();
+        const sourceViewData = sourceView ? sourceView.getViewData() : null;
+
+        const views = Transforms.flattenViews(viewGroups);
+        const viewDtos = views.map(v => {
+            const validationResult = sourceViewData ?
+                Validation.validateViewForCopySettings(sourceViewData, v.getViewData(), enabledOptionIds) :
+                {success: false, message: 'Source view was not found'};
+            return {
+                name: v.name,
+                key: v.key,
+                validationState: validationResult
+            };
+        });
 
         return (
             <TargetViewsTree
-                views={views}
-                selectedViewIds={this.state.selectedTargetViewIds}
+                views={viewDtos}
+                selectedViewIds={selectedTargetViewIds}
                 onSelectedViewIdsChanged={this._setNewSelectedViewIds}/>
         );
     },
@@ -146,15 +181,18 @@ export default React.createClass({
     _renderApplyButton() {
         const {selectedTargetViewIds, enabledOptionIds} = this.state;
 
-        if (!selectedTargetViewIds.size || !enabledOptionIds.size) {
+        const targetCount = selectedTargetViewIds.size;
+        if (!targetCount || !enabledOptionIds.size) {
             return null;
         }
+
+        const text = `Apply to ${targetCount} selected ${targetCount === 1 ? 'view' : 'views'}`;
 
         return (
             <button
                 className="btn btn-primary"
                 type="submit">
-                Apply
+                {text}
             </button>
         );
     }

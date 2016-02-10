@@ -29,6 +29,7 @@ export default React.createClass({
                 key={v.key}
                 viewId={v.key}
                 name={v.name}
+                validationState={v.validationState}
                 isSelected={selectedViewIds.has(v.key)}
                 onChange={this._toggleSelectedView}/>
         ));

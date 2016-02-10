@@ -4,7 +4,13 @@ const T = React.PropTypes;
 export default React.createClass({
     displayName: 'selectableViewItem',
     propTypes: {
+        name: T.string.isRequired,
         viewId: T.string.isRequired,
+        validationState: T.shape({
+            success: T.bool.isRequired,
+            message: T.string
+        }).isRequired,
+        isSelected: T.bool.isRequired,
         onChange: T.func.isRequired
     },
     _onChange(e) {
@@ -12,14 +18,23 @@ export default React.createClass({
         this.props.onChange(this.props.viewId, isChecked);
     },
     render() {
+        const {isSelected, validationState, name} = this.props;
+
+        const isChecked = isSelected && validationState.success;
+        const disabled = !Boolean(validationState.success);
+        const displayName = disabled ?
+            `${name} (${validationState.message})` :
+            name;
+
         return (
             <div className="checkbox">
                 <label>
                     <input
                         type="checkbox"
-                        checked={this.props.isSelected}
+                        checked={isChecked}
+                        disabled={disabled}
                         onChange={this._onChange}/>
-                    {this.props.name}
+                    {displayName}
                 </label>
             </div>
         );

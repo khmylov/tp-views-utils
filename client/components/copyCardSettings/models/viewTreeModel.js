@@ -5,13 +5,30 @@ import Api from '../../../services/tp-views-api';
 import Log from './log';
 
 import Transforms from './viewTransforms';
+import Validation from './validation';
 
 const nullLog = new Log();
+const nullProgress = {
+    onNext: _.noop,
+    onCompleted: _.noop
+};
 
 class ViewModel {
-    constructor({key, name}) {
-        this.key = key;
-        this.name = name;
+    constructor(itemData) {
+        this._itemData = _.cloneDeep(itemData);
+    }
+
+    get key() {
+        return this._itemData.key;
+    }
+
+    get name() {
+        return this._itemData.name;
+    }
+
+    getViewData() {
+        // TODO: use immutable data here to avoid cloning?
+        return _.cloneDeep(this._itemData);
     }
 }
 
@@ -56,16 +73,64 @@ class ViewTreeModel {
         return Transforms.flattenViews(this.groupModels);
     }
 
-    copyCardSettings({fromViewId, toViewIds, optionIds}, log = nullLog) {
-        var def = $.Deferred();
-        log.append(`Started copying ${fromViewId} to ${toViewIds.join(', ')}`);
-        log.append(`Selected options: ${optionIds.join(', ')}`);
-        setTimeout(() => log.append('First completed'), 1000);
-        setTimeout(() => log.append('Second completed'), 2000);
+    copyCardSettings({fromViewId, toViewIds, optionIds}, log = nullLog, progress = nullProgress) {
+        const sourceView = Transforms.findViewById(this.groupModels, fromViewId);
 
-        setTimeout(() => def.resolve(), 3000);
-        return def
+        if (!sourceView) {
+            return $.Deferred().reject(`Unable to find source view with id '${fromViewId}'`);
+        }
+
+        const sourceViewData = sourceView.getViewData();
+
+        const {targetViews, targetErrors} = _.reduce(toViewIds, (acc, viewId) => {
+            const targetView = Transforms.findViewById(this.groupModels, viewId);
+            if (!targetView) {
+                acc.targetErrors.push(`Unable to find target view with id '${viewId}'`);
+                return acc;
+            }
+
+            const targetViewData = targetView.getViewData();
+            const validationResult = Validation.validateViewForCopySettings(sourceViewData, targetViewData, optionIds);
+            if (!validationResult.success) {
+                acc.targetErrors.push(`Validation error for target view '${viewId}': ${validationResult.message}`);
+                return acc;
+            }
+
+            acc.targetViews.push(targetView);
+            return acc;
+        }, {targetViews: [], targetErrors: []});
+
+        if (targetErrors.length) {
+            return $.Deferred().reject(`Unable to start an update:\n\n${targetErrors.join('\n')}`);
+        }
+
+        const runForView = targetView => {
+            const updateData = this._createUpdateRequestBody(sourceViewData, targetView.getViewData());
+            log.append(`POST /api/views/${targetView.key} ${JSON.stringify(updateData)}`);
+            const def = $.Deferred();
+            setTimeout(() => def.resolve(), 600);
+            return def.promise();
+        };
+
+        return this
+            ._runPromiseSeq(targetViews, runForView)
             .then(() => log.append('All done'));
+    }
+
+    _runPromiseSeq(items, createPromise) {
+        const safe = x => {
+            const def = $.Deferred();
+            createPromise(x).always(() => def.resolve());
+            return def;
+        };
+
+        return _.reduce(items, (acc, item) => {
+            return def.then(() => safe(item));
+        }, $.Deferred().resolve());
+    }
+
+    _createUpdateRequestBody(sourceViewData, targetViewData) {
+        return {};
     }
 
     static _createGroupModel(groupDto) {
