@@ -4,9 +4,8 @@ import LoadingStateWrapper from '../../views/loadingStateWrapper.jsx'
 import './styles.css'
 
 import Model from './models/viewTreeModel'
-
-import ViewTree from './views/viewTree.jsx'
-import ViewSourceDetails from './views/viewSourceDetails.jsx'
+import ConfigureScreen from './views/configure.jsx';
+import UpdateProgress from './views/operationStatus/updateProgress.jsx';
 
 export default React.createClass({
     _loadData() {
@@ -19,12 +18,21 @@ export default React.createClass({
 
     getInitialState() {
         return {
-            currentViewId: null
+            currentViewId: null,
+            updateOperationStarted: false
         }
     },
 
-    _setViewAsCurrent(viewId) {
-        this.setState({currentViewId: viewId});
+    _scheduleOperation({sourceViewId, targetViewIds}) {
+        if (!sourceViewId || !targetViewIds.size || this.state.updateOperationStarted) {
+            return;
+        }
+
+        const model = this._model;
+        this._startOperation = log => {
+            return model.copyCardSettings(sourceViewId, targetViewIds, log);
+        };
+        this.setState({updateOperationStarted: true});
     },
 
     render() {
@@ -36,35 +44,17 @@ export default React.createClass({
     },
 
     _renderChildren() {
-        return (
-            <div className="row">
-                <div className="col-sm-2 sidebar">
-                    {this._renderViewSelector()}
-                </div>
-                <div className="col-sm-10">
-                    {this._renderViewDetails()}
-                </div>
-            </div>
-        );
-    },
-
-    _renderViewSelector() {
-        return <ViewTree
-            model={this._model}
-            currentViewId={this.state.currentViewId }
-            setViewAsCurrent={this._setViewAsCurrent}/>;
-    },
-
-    _renderViewDetails() {
-        const {currentViewId} = this.state;
-        if (!currentViewId) {
-            return <div>Pick a view from the list to copy card settings from</div>;
+        if (this.state.updateOperationStarted) {
+            return (
+                <UpdateProgress
+                    startOperation={this._startOperation}/>
+            );
         }
 
         return (
-            <ViewSourceDetails
-                currentViewId={currentViewId}
-                model={this._model} />
-        )
+            <ConfigureScreen
+                viewGroups={this._model.groupModels}
+                runOperation={this._scheduleOperation}/>
+        );
     }
 })

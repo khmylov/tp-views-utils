@@ -25,9 +25,24 @@ export default React.createClass({
                 </nav>
 
                 <div className="container">
-                    {this.props.children}
+                    {this._renderContent()}
                 </div>
             </div>
+        );
+    },
+
+    _renderContent() {
+        const {children} = this.props;
+        if (children) {
+            return children;
+        }
+
+        return (
+            <p>
+                Hi there!
+                <br />
+                Choose a usecase in the navigation bar
+            </p>
         );
     }
 })

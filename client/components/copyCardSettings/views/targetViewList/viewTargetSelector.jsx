@@ -1,11 +1,10 @@
 import React from 'react';
 import Immutable from 'immutable';
-
 import SelectableView from './selectableView.jsx';
 
 const T = React.PropTypes;
 
-const ViewTargetSelector = React.createClass({
+export default React.createClass({
     displayName: 'viewTargetSelector',
 
     propTypes: {
@@ -41,5 +40,3 @@ const ViewTargetSelector = React.createClass({
         );
     }
 });
-
-export default ViewTargetSelector;

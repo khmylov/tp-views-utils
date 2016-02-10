@@ -1,7 +1,3 @@
 .copyCardSettings__view-tree__view-item {
   cursor: pointer;
 }
-
-.copyCardSettings__view-tree__view-item.active {
-  font-weight: bold;
-}

@@ -4,6 +4,10 @@ import Immutable from 'immutable';
 import Api from '../../../services/tp-views-api';
 import Log from './log';
 
+import Transforms from './viewTransforms';
+
+const nullLog = new Log();
+
 class ViewModel {
     constructor({key, name}) {
         this.key = key;
@@ -32,7 +36,7 @@ class ViewGroupModel {
 class ViewTreeModel {
     constructor() {
         this._api = new Api();
-        this.groupModels = [];
+        this.groupModels = Immutable.List();
         this.log = new Log();
     }
 
@@ -49,19 +53,11 @@ class ViewTreeModel {
     }
 
     getAllViews() {
-        return this.groupModels
-            .flatMap(g => g.children);
+        return Transforms.flattenViews(this.groupModels);
     }
 
-    getViewById(viewId) {
-        return this
-            .getAllViews()
-            .find(v => v.key === viewId);
-    }
-
-    copyCardSettings(fromViewId, toViewIds) {
+    copyCardSettings(fromViewId, toViewIds, log = nullLog) {
         var def = $.Deferred();
-        const log = this.log;
         log.append(`Started copying ${fromViewId} to ${toViewIds.join(', ')}`);
         setTimeout(() => log.append('First completed'), 1000);
         setTimeout(() => log.append('Second completed'), 2000);

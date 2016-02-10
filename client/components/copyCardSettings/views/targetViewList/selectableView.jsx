@@ -1,7 +1,7 @@
 import React from 'react';
 const T = React.PropTypes;
 
-const SelectableView = React.createClass({
+export default React.createClass({
     displayName: 'selectableViewItem',
     propTypes: {
         viewId: T.string.isRequired,
@@ -25,5 +25,3 @@ const SelectableView = React.createClass({
         );
     }
 });
-
-export default SelectableView;

@@ -1,16 +1,14 @@
 import React from 'react';
-
-import Log from './log.jsx';
+import LogView from '../../../../views/log.jsx';
+import Log from '../../models/log';
 
 const T = React.PropTypes;
-
 
 export default React.createClass({
     displayName: 'copyCardSettingsUpdateProgress',
 
     propTypes: {
-        startOperation: T.func.isRequired,
-        log: T.object.isRequired
+        startOperation: T.func.isRequired
     },
 
     getInitialState() {
@@ -20,10 +18,12 @@ export default React.createClass({
         }
     },
 
-    componentDidMount() {
-        const {startOperation, log} = this.props;
+    componentWillMount() {
+        this._log = new Log();
+    },
 
-        startOperation()
+    componentDidMount() {
+        this.props.startOperation(this._log)
             .done(_ => {
                 if (this.isMounted()) {
                     this.setState({isCompleted: true});
@@ -37,20 +37,18 @@ export default React.createClass({
     },
 
     render() {
-        const {log} = this.props;
-
-        const continueButton = this.state.isCompleted ?
-            <button className="btn btn-primary">Continue</button> :
-            null;
+        const status = this.state.isCompleted ?
+            <div className="alert alert-success">All done</div> :
+            <div className="alert alert-info">Running, don't close the page...</div>;
 
         return (
             <div>
-                <Log
+                {status}
+                <LogView
                     className="form-control"
                     rows="20"
-                    onLogAppend={log.onLogAppend} />
-                {continueButton}
+                    onLogAppend={this._log.onLogAppend} />
             </div>
         );
     }
-})
+});
