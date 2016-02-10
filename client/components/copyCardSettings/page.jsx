@@ -23,14 +23,18 @@ export default React.createClass({
         }
     },
 
-    _scheduleOperation({sourceViewId, targetViewIds}) {
-        if (!sourceViewId || !targetViewIds.size || this.state.updateOperationStarted) {
+    _scheduleOperation({sourceViewId, targetViewIds, copyOptions}) {
+        if (!sourceViewId || !targetViewIds.size || !copyOptions.size || this.state.updateOperationStarted) {
             return;
         }
 
         const model = this._model;
         this._startOperation = log => {
-            return model.copyCardSettings(sourceViewId, targetViewIds, log);
+            return model.copyCardSettings({
+                fromViewId: sourceViewId,
+                toViewIds: targetViewIds,
+                optionIds: copyOptions
+            }, log);
         };
         this.setState({updateOperationStarted: true});
     },

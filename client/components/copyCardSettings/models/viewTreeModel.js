@@ -56,9 +56,10 @@ class ViewTreeModel {
         return Transforms.flattenViews(this.groupModels);
     }
 
-    copyCardSettings(fromViewId, toViewIds, log = nullLog) {
+    copyCardSettings({fromViewId, toViewIds, optionIds}, log = nullLog) {
         var def = $.Deferred();
         log.append(`Started copying ${fromViewId} to ${toViewIds.join(', ')}`);
+        log.append(`Selected options: ${optionIds.join(', ')}`);
         setTimeout(() => log.append('First completed'), 1000);
         setTimeout(() => log.append('Second completed'), 2000);
 
