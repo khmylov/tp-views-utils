@@ -36,7 +36,7 @@ export default React.createClass({
 
         return (
             <div className="panel panel-default">
-                <div className="panel-heading">{displayName}</div>
+                <div className="panel-heading copyCardSettings__view-tree__group-name">{displayName}</div>
                 <ul className="list-group">
                     {viewElements}
                 </ul>

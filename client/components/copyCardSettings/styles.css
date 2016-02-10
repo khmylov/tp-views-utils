@@ -1,3 +1,16 @@
-.copyCardSettings__view-tree__view-item {
+.list-group-item.copyCardSettings__view-tree__view-item {
   cursor: pointer;
+  padding: 5px 10px;
+}
+
+.panel-heading.copyCardSettings__view-tree__group-name {
+  padding: 5px 10px;
+}
+
+.copyCardSettings__target-list__target--disabled > td:not(.danger) {
+  color: #888;
+}
+
+.copyCardSettings__target-list__name-checkbox {
+  margin: 0 !important;
 }

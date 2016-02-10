@@ -12,7 +12,7 @@ const Validation = {
                 return validationOk;
             }
 
-            return validationError(`Views have different cell types. Source: ${sourceCellTypes.join(', ')}. Target: ${targetCellTypes.join(', ')}`);
+            return validationError(`Views have different cell types. Source: '${sourceCellTypes.join(', ')}'. Target: '${targetCellTypes.join(', ')}'`);
         },
 
         'viewTypeAndMode'(sourceViewData, targetViewData) {

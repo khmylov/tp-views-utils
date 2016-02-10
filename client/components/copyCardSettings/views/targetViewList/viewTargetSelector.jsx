@@ -10,7 +10,8 @@ export default React.createClass({
     propTypes: {
         selectedViewIds: T.instanceOf(Immutable.Set).isRequired,
         onSelectedViewIdsChanged: T.func.isRequired,
-        views: T.instanceOf(Immutable.Iterable).isRequired
+        views: T.instanceOf(Immutable.Iterable).isRequired,
+        displayUnavailable: T.bool.isRequired
     },
 
     _toggleSelectedView(viewId, isSelected) {
@@ -23,21 +24,36 @@ export default React.createClass({
     },
 
     render() {
-        const {selectedViewIds, views} = this.props;
-        const viewItems = views.map(v => (
-            <SelectableView
+        const {selectedViewIds, views, displayUnavailable} = this.props;
+        const viewsToDisplay = displayUnavailable ?
+            views :
+            views.filter(({validationState}) => validationState.success);
+
+        const viewItems = viewsToDisplay.map(v => {
+            return <SelectableView
                 key={v.key}
                 viewId={v.key}
                 name={v.name}
+                viewData={v.viewData}
                 validationState={v.validationState}
                 isSelected={selectedViewIds.has(v.key)}
-                onChange={this._toggleSelectedView}/>
-        ));
+                onChange={this._toggleSelectedView}/>;
+        });
 
         return (
-            <div className="copyCardSettings__view-details__target-list">
-                {viewItems}
-            </div>
+            <table className="table table-condensed table-bordered">
+                <thead>
+                    <tr>
+                        <th>Pick?</th>
+                        <th>View type</th>
+                        <th>Cell types</th>
+                        <th>Errors</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {viewItems}
+                </tbody>
+            </table>
         );
     }
 });

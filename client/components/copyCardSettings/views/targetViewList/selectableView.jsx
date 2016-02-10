@@ -1,4 +1,8 @@
 import React from 'react';
+import classNames from 'classnames';
+
+import ViewInfo from '../../models/viewInfo';
+
 const T = React.PropTypes;
 
 export default React.createClass({
@@ -6,6 +10,7 @@ export default React.createClass({
     propTypes: {
         name: T.string.isRequired,
         viewId: T.string.isRequired,
+        viewData: T.object.isRequired,
         validationState: T.shape({
             success: T.bool.isRequired,
             message: T.string
@@ -18,25 +23,41 @@ export default React.createClass({
         this.props.onChange(this.props.viewId, isChecked);
     },
     render() {
-        const {isSelected, validationState, name} = this.props;
+        const {isSelected, validationState, name, viewData} = this.props;
 
         const isChecked = isSelected && validationState.success;
         const disabled = !Boolean(validationState.success);
-        const displayName = disabled ?
-            `${name} (${validationState.message})` :
-            name;
+
+        const rowClassName = classNames({
+            'success': isChecked,
+            'copyCardSettings__target-list__target--disabled': disabled
+        });
+
+        const statusClassName = classNames({
+            'danger': disabled
+        });
 
         return (
-            <div className="checkbox">
-                <label>
-                    <input
-                        type="checkbox"
-                        checked={isChecked}
-                        disabled={disabled}
-                        onChange={this._onChange}/>
-                    {displayName}
-                </label>
-            </div>
+            <tr className={rowClassName}>
+                <td>
+                    <div className="checkbox copyCardSettings__target-list__name-checkbox">
+                        <label>
+                            <input
+                                type="checkbox"
+                                checked={isChecked}
+                                disabled={disabled}
+                                onChange={this._onChange}/>
+                            {name}
+                        </label>
+                    </div>
+                </td>
+                <td>{ViewInfo.formatViewType(viewData.itemType, viewData.viewMode)}</td>
+                <td>{ViewInfo.formatTypes(viewData.cells)}</td>
+                <td className={statusClassName}>
+                    <small>{disabled ? validationState.message : 'OK'}</small>
+                </td>
+            </tr>
+
         );
     }
 });

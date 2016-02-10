@@ -4,6 +4,7 @@ import Immutable from 'immutable';
 import SourceViewTree from './sourceViewSelector/groupList.jsx';
 import TargetViewsTree from './targetViewList/viewTargetSelector.jsx';
 import CopyOptions from './copyOptions.jsx';
+import ViewDetailsTable from './viewDetailsTable.jsx';
 
 import Transforms from '../models/viewTransforms';
 import Validation from '../models/validation';
@@ -27,8 +28,13 @@ export default React.createClass({
         return {
             sourceViewId: null,
             selectedTargetViewIds: Immutable.Set(),
-            enabledOptionIds: Immutable.Set.of('units-cells')
+            enabledOptionIds: Immutable.Set.of('units-cells'),
+            displayUnavailableTargetViews: false
         };
+    },
+
+    _toggleDisplayUnavailableTargets() {
+        this.setState({displayUnavailableTargetViews: !this.state.displayUnavailableTargetViews});
     },
 
     _setViewAsCurrent(newViewId) {
@@ -113,13 +119,15 @@ export default React.createClass({
             return <div>Unable to get view info</div>;
         }
 
+        const sourceViewData = sourceView.getViewData();
+
         return (
             <div>
                 <p>
-                    <span><strong>{sourceView.name}</strong></span>
-                    <br />
-                    <span>This view has the following settings: (TODO)</span>
+                    <span>Selected view <strong>{sourceView.name}</strong></span>
                 </p>
+
+                <ViewDetailsTable {...sourceViewData}/>
 
                 <br />
 
@@ -129,10 +137,6 @@ export default React.createClass({
                 {this._renderCopyOptions()}
 
                 <br />
-
-                <div>
-                    Choose a set of views to apply the settings to:
-                </div>
 
                 <form onSubmit={this._onOperationSubmit}>
                     {this._renderTargetViewsSelector()}
@@ -153,7 +157,7 @@ export default React.createClass({
 
     _renderTargetViewsSelector() {
         const {viewGroups} = this.props;
-        const {selectedTargetViewIds, enabledOptionIds} = this.state;
+        const {selectedTargetViewIds, enabledOptionIds, displayUnavailableTargetViews} = this.state;
 
         const sourceView = this._getSourceView();
         const sourceViewData = sourceView ? sourceView.getViewData() : null;
@@ -166,15 +170,26 @@ export default React.createClass({
             return {
                 name: v.name,
                 key: v.key,
-                validationState: validationResult
+                validationState: validationResult,
+                viewData: v.getViewData()
             };
         });
 
         return (
-            <TargetViewsTree
-                views={viewDtos}
-                selectedViewIds={selectedTargetViewIds}
-                onSelectedViewIdsChanged={this._setNewSelectedViewIds}/>
+            <div>
+                <div>
+                    <span>Choose a set of views to apply the settings to</span>
+                    <a onClick={this._toggleDisplayUnavailableTargets} className="btn btn-link pull-right">
+                        {displayUnavailableTargetViews ? 'Click to display only valid views' : 'Click to display all views'}
+                    </a>
+                </div>
+                <br />
+                <TargetViewsTree
+                    views={viewDtos}
+                    selectedViewIds={selectedTargetViewIds}
+                    onSelectedViewIdsChanged={this._setNewSelectedViewIds}
+                    displayUnavailable={displayUnavailableTargetViews}/>
+            </div>
         );
     },
 
