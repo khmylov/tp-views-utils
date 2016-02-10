@@ -14,6 +14,9 @@ const T = React.PropTypes;
 const copyOptionMap = Immutable.Map({
     'units-cells': {
         name: 'Customize card settings (cards)'
+    },
+    'colors-cells': {
+        name: 'Visual encoding (cards)'
     }
 });
 
@@ -95,7 +98,7 @@ export default React.createClass({
     },
 
     _renderOptionsColumn() {
-        const {sourceViewId} = this.state;
+        const {sourceViewId, enabledOptionIds} = this.state;
 
         if (!sourceViewId) {
             return <div>Pick a view from the list to copy card settings from</div>;
@@ -110,7 +113,7 @@ export default React.createClass({
 
         const sourceViewData = sourceView.getViewData();
 
-        const sourceViewValidationResult = Validation.validateSourceView(sourceViewData);
+        const sourceViewValidationResult = Validation.validateSourceView(sourceViewData, enabledOptionIds.toArray());
         const copyForm = sourceViewValidationResult.success ?
             <form onSubmit={this._onOperationSubmit}>
                 {this._renderTargetViewsSelector()}
@@ -147,7 +150,7 @@ export default React.createClass({
                 <div className="alert alert-danger">
                     <span>Settings of this view can't be copied:</span>
                     <br />
-                    <span>{error}</span>
+                    <pre>{error}</pre>
                 </div>
             );
         }
@@ -157,7 +160,7 @@ export default React.createClass({
                 <div className="alert alert-warning">
                     <span>There can be some issues with copying:</span>
                     <br />
-                    <span>{warning}</span>
+                    <pre>{warning}</pre>
                 </div>
             );
         }

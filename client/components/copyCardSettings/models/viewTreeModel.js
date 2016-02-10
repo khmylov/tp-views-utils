@@ -148,6 +148,10 @@ class ViewTreeModel {
             result.cardSettings = _.cloneDeep(sourceViewData.cardSettings);
         }
 
+        if (_.includes(optionIds, 'colors-cells')) {
+            result.colorSettings = _.cloneDeep(sourceViewData.colorSettings);
+        }
+
         return result;
     }
 

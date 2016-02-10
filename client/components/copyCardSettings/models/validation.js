@@ -56,9 +56,20 @@ const Validation = {
     },
 
     validateSourceView(sourceViewData, copyOptions) {
-        if (!sourceViewData.cardSettings) {
-            return validationWarning('Source doesn\'t have custom card settings (perhaps it has default set of units?)');
+        var messages = [];
+
+        if (_.includes(copyOptions, 'units-cells') && !sourceViewData.cardSettings) {
+            messages.push('Source doesn\'t have custom card settings (perhaps it has default set of units?)');
         }
+
+        if (_.includes(copyOptions, 'colors-cells') && !sourceViewData.colorSettings) {
+            messages.push('Source doesn\'t have custom visual encoding settings');
+        }
+
+        if (messages.length) {
+            return validationWarning(messages.join('\n'));
+        }
+
         return validationOk;
     },
 
