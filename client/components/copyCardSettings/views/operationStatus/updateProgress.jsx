@@ -26,29 +26,48 @@ export default React.createClass({
         this.props.startOperation(this._log)
             .done(_ => {
                 if (this.isMounted()) {
-                    this.setState({isCompleted: true});
+                    this.setState({isCompleted: true, error: null});
                 }
             })
             .fail(e => {
                 if (this.isMounted()) {
-                    this.setState({error: e})
+                    this.setState({isCompleted: true, error: e})
                 }
             });
     },
 
     render() {
-        const status = this.state.isCompleted ?
-            <div className="alert alert-success">All done</div> :
-            <div className="alert alert-info">Running, don't close the page...</div>;
-
         return (
             <div>
-                {status}
+                {this._renderStatus()}
                 <LogView
                     className="form-control"
                     rows="20"
                     onLogAppend={this._log.onLogAppend} />
             </div>
         );
+    },
+
+    _renderStatus() {
+        const {isCompleted, error} = this.state;
+        if (!isCompleted) {
+            return <div className="alert alert-info">Running, don't close the page...</div>;
+        }
+
+        if (error) {
+            return (
+                <div className="alert alert-danger">
+                    <span>
+                        Error occurred
+                    </span>
+                    <br />
+                    <pre>
+                        {error}
+                    </pre>
+                </div>
+            );
+        }
+
+        return <div className="alert alert-success">All done</div>;
     }
 });

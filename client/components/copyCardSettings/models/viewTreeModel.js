@@ -108,7 +108,7 @@ class ViewTreeModel {
             const updateData = this._createUpdateRequestBody(sourceViewData, targetView.getViewData());
             log.append(`POST /api/views/${targetView.key} ${JSON.stringify(updateData)}`);
             const def = $.Deferred();
-            setTimeout(() => def.resolve(), 600);
+            setTimeout(() => def.resolve(), 1500);
             return def.promise();
         };
 
@@ -121,16 +121,16 @@ class ViewTreeModel {
         const safe = x => {
             const def = $.Deferred();
             createPromise(x).always(() => def.resolve());
-            return def;
+            return def.promise();
         };
 
         return _.reduce(items, (acc, item) => {
-            return def.then(() => safe(item));
+            return acc.then(() => safe(item));
         }, $.Deferred().resolve());
     }
 
     _createUpdateRequestBody(sourceViewData, targetViewData) {
-        return {};
+        return _.cloneDeep(sourceViewData.cardSettings);
     }
 
     static _createGroupModel(groupDto) {

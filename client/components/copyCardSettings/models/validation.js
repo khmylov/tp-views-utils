@@ -5,9 +5,26 @@ const validationError = message => ({success: false, message: message});
 
 const Validation = {
     _validationRules: {
+        'cardSettings'(sourceViewData) {
+            if (!sourceViewData.cardSettings) {
+                return validationError('Source doesn\'t have custom card settings');
+            }
+
+            return validationOk;
+        },
+
         'cellTypes'(sourceViewData, targetViewData) {
             const sourceCellTypes = Validation._getCellTypes(sourceViewData);
             const targetCellTypes = Validation._getCellTypes(targetViewData);
+
+            if (!sourceCellTypes.length) {
+                return validationError('Source doesn\'t have configured cards');
+            }
+
+            if (!targetCellTypes.length) {
+                return validationError('Target doesn\'t have configured cards');
+            }
+
             if (_.isEqual(sourceCellTypes, targetCellTypes)) {
                 return validationOk;
             }
