@@ -1,18 +1,11 @@
 import _ from 'lodash';
 
 const validationOk = Object.freeze({success: true});
-const validationError = message => ({success: false, message: message});
+const validationError = message => ({success: false, error: message});
+const validationWarning = message => ({success: true, warning: message});
 
 const Validation = {
     _validationRules: {
-        'cardSettings'(sourceViewData) {
-            if (!sourceViewData.cardSettings) {
-                return validationError('Source doesn\'t have custom card settings');
-            }
-
-            return validationOk;
-        },
-
         'cellTypes'(sourceViewData, targetViewData) {
             const sourceCellTypes = Validation._getCellTypes(sourceViewData);
             const targetCellTypes = Validation._getCellTypes(targetViewData);
@@ -60,6 +53,13 @@ const Validation = {
 
     validateViewForCopySettings(sourceViewData, targetViewData, copyOptions) {
         return this._chainValidations(sourceViewData, targetViewData);
+    },
+
+    validateSourceView(sourceViewData, copyOptions) {
+        if (!sourceViewData.cardSettings) {
+            return validationWarning('Source doesn\'t have custom card settings (perhaps it has default set of units?)');
+        }
+        return validationOk;
     },
 
     _chainValidations(sourceViewData, targetViewData) {

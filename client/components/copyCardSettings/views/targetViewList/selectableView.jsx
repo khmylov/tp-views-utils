@@ -22,6 +22,13 @@ export default React.createClass({
         const isChecked = e.target.checked;
         this.props.onChange(this.props.viewId, isChecked);
     },
+    _getStatusText({success, error, warning}) {
+        if (success) {
+            return 'OK';
+        }
+
+        return error || warning;
+    },
     render() {
         const {isSelected, validationState, name, viewData} = this.props;
 
@@ -34,7 +41,8 @@ export default React.createClass({
         });
 
         const statusClassName = classNames({
-            'danger': disabled
+            'danger': disabled,
+            'warning': validationState.warning
         });
 
         return (
@@ -54,7 +62,7 @@ export default React.createClass({
                 <td>{ViewInfo.formatViewType(viewData.itemType, viewData.viewMode)}</td>
                 <td>{ViewInfo.formatTypes(viewData.cells)}</td>
                 <td className={statusClassName}>
-                    <small>{disabled ? validationState.message : 'OK'}</small>
+                    <small>{this._getStatusText(validationState)}</small>
                 </td>
             </tr>
 

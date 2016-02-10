@@ -12,7 +12,7 @@ export default app => {
         api
             .getAllViews()
             .then(r => {
-                res.end(JSON.stringify(r));
+                res.end(r);
             })
             .catch(e => {
                 console.error(req.url, 'getAllViews() failed', e);
@@ -20,8 +20,10 @@ export default app => {
             });
     });
 
-    app.post('/api/views/:viewId', (req, res) => {
+    app.post('/api/views/view/:viewId', (req, res) => {
         const viewId = req.params.viewId;
+
+        console.log(`Received viewId: ${viewId}. Body: ${JSON.stringify(req.body)}.`);
 
         const target = new TpTarget(defaultTargetConfig);
         const api = new TpViewsApi(target);

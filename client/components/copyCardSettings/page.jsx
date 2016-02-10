@@ -33,7 +33,7 @@ export default React.createClass({
             return model.copyCardSettings({
                 fromViewId: sourceViewId,
                 toViewIds: targetViewIds.toArray(),
-                optionIds: copyOptions
+                optionIds: copyOptions.toArray()
             }, log);
         };
         this.setState({updateOperationStarted: true});

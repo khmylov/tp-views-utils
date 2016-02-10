@@ -72,17 +72,6 @@ export default React.createClass({
         return Transforms.findViewById(this.props.viewGroups, this.state.sourceViewId);
     },
 
-    _validateViewForOperation(viewData) {
-        const sourceView = this._getSourceView();
-        if (!sourceView) {
-            return { success: false, message: 'Unable to find source view' };
-        }
-
-        return Validation.validateViewForCopySettings(
-            sourceView.getViewData(), viewData,
-            this.state.enabledOptionIds);
-    },
-
     render() {
         return (
             <div className="row">
@@ -121,6 +110,14 @@ export default React.createClass({
 
         const sourceViewData = sourceView.getViewData();
 
+        const sourceViewValidationResult = Validation.validateSourceView(sourceViewData);
+        const copyForm = sourceViewValidationResult.success ?
+            <form onSubmit={this._onOperationSubmit}>
+                {this._renderTargetViewsSelector()}
+                {this._renderApplyButton()}
+            </form> :
+            null;
+
         return (
             <div>
                 <p>
@@ -138,12 +135,34 @@ export default React.createClass({
 
                 <br />
 
-                <form onSubmit={this._onOperationSubmit}>
-                    {this._renderTargetViewsSelector()}
-                    {this._renderApplyButton()}
-                </form>
+                {this._renderSourceValidation(sourceViewValidationResult)}
+                {copyForm}
             </div>
         );
+    },
+
+    _renderSourceValidation({error, warning}) {
+        if (error) {
+            return (
+                <div className="alert alert-danger">
+                    <span>Settings of this view can't be copied:</span>
+                    <br />
+                    <span>{error}</span>
+                </div>
+            );
+        }
+
+        if (warning) {
+            return (
+                <div className="alert alert-warning">
+                    <span>There can be some issues with copying:</span>
+                    <br />
+                    <span>{warning}</span>
+                </div>
+            );
+        }
+
+        return null;
     },
 
     _renderCopyOptions() {
@@ -157,16 +176,19 @@ export default React.createClass({
 
     _renderTargetViewsSelector() {
         const {viewGroups} = this.props;
-        const {selectedTargetViewIds, enabledOptionIds, displayUnavailableTargetViews} = this.state;
+        const {selectedTargetViewIds, enabledOptionIds, displayUnavailableTargetViews, sourceViewId} = this.state;
 
         const sourceView = this._getSourceView();
         const sourceViewData = sourceView ? sourceView.getViewData() : null;
 
-        const views = Transforms.flattenViews(viewGroups);
+        const views = Transforms
+            .flattenViews(viewGroups)
+            .filter(v => v.key !== sourceViewId);
+
         const viewDtos = views.map(v => {
             const validationResult = sourceViewData ?
                 Validation.validateViewForCopySettings(sourceViewData, v.getViewData(), enabledOptionIds) :
-                {success: false, message: 'Source view was not found'};
+                {success: false, error: 'Source view was not found'};
             return {
                 name: v.name,
                 key: v.key,

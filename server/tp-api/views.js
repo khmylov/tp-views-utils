@@ -12,7 +12,7 @@ class TpViewsApi {
 
     createOrUpdateView(viewId, data) {
         return this
-            ._doRequest(`/${viewId}`, 'POST', data);
+            ._doRequest(`/view/${viewId}`, 'POST', data);
     }
 
     _doRequest(relativeUrl, type = 'GET', data = null) {
@@ -22,8 +22,7 @@ class TpViewsApi {
             qs: {
                 token: this._target.token
             },
-            body: data,
-            json: true
+            json: data
         };
 
         return rp(options);

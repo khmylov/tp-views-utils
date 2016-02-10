@@ -10,8 +10,9 @@ class Api {
         return $.ajax({
             url: fullUrl,
             type: type,
-            data: data,
-            dataType: 'JSON'
+            data: data != null ? JSON.stringify(data) : null,
+            contentType: 'application/json',
+            dataType: 'json'
         })
     }
 }

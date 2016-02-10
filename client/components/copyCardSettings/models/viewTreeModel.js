@@ -73,6 +73,11 @@ class ViewTreeModel {
         return Transforms.flattenViews(this.groupModels);
     }
 
+    updateView(viewId, updateData) {
+        return this._api
+            .doRequest(`/views/view/${viewId}`, 'POST', updateData);
+    }
+
     copyCardSettings({fromViewId, toViewIds, optionIds}, log = nullLog, progress = nullProgress) {
         const sourceView = Transforms.findViewById(this.groupModels, fromViewId);
 
@@ -92,7 +97,7 @@ class ViewTreeModel {
             const targetViewData = targetView.getViewData();
             const validationResult = Validation.validateViewForCopySettings(sourceViewData, targetViewData, optionIds);
             if (!validationResult.success) {
-                acc.targetErrors.push(`Validation error for target view '${viewId}': ${validationResult.message}`);
+                acc.targetErrors.push(`Validation error for target view '${viewId}': ${validationResult.error}`);
                 return acc;
             }
 
@@ -105,11 +110,18 @@ class ViewTreeModel {
         }
 
         const runForView = targetView => {
-            const updateData = this._createUpdateRequestBody(sourceViewData, targetView.getViewData());
-            log.append(`POST /api/views/${targetView.key} ${JSON.stringify(updateData)}`);
-            const def = $.Deferred();
-            setTimeout(() => def.resolve(), 1500);
-            return def.promise();
+            const updateData = this._createUpdateRequestBody(sourceViewData, targetView.getViewData(), optionIds);
+            const viewId = targetView.key;
+            const displayName = `${viewId} ${targetView.name}`;
+            log.append(`Updating view ${displayName}...`);
+            return this
+                .updateView(targetView.key, updateData)
+                .done(() => log.append(`Finished updating ${displayName}.`))
+                .fail(() => log.append(`Error when updating ${displayName}`));
+            //log.append(`POST /api/views/${targetView.key} ${JSON.stringify(updateData)}`);
+            //const def = $.Deferred();
+            //setTimeout(() => def.resolve(), 1500);
+            //return def.promise();
         };
 
         return this
@@ -129,8 +141,14 @@ class ViewTreeModel {
         }, $.Deferred().resolve());
     }
 
-    _createUpdateRequestBody(sourceViewData, targetViewData) {
-        return _.cloneDeep(sourceViewData.cardSettings);
+    _createUpdateRequestBody(sourceViewData, targetViewData, optionIds) {
+        const result = {};
+
+        if (_.includes(optionIds, 'units-cells')) {
+            result.cardSettings = _.cloneDeep(sourceViewData.cardSettings);
+        }
+
+        return result;
     }
 
     static _createGroupModel(groupDto) {
