@@ -38,7 +38,7 @@ export default app => {
             });
     });
 
-    app.get('/', (req, res) => {
+    app.get('*', (req, res) => {
         const HTML = `
           <!DOCTYPE html>
           <html>
@@ -48,7 +48,7 @@ export default app => {
             </head>
             <body>
               <div id="rootElement">Loading..</div>
-              <script type="text/javascript" src="static/frontend.js"></script>
+              <script type="text/javascript" src="/static/frontend.js"></script>
             </body>
           </html>
         `;

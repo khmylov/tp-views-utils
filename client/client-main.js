@@ -1,5 +1,6 @@
 import React from 'react'
 import {Router, Route} from 'react-router'
+import createBrowserHistory from 'history/lib/createBrowserHistory'
 import {render} from 'react-dom'
 
 import './css/main.css'
@@ -20,5 +21,5 @@ const routeConfig = {
 };
 
 render(
-    React.createElement(Router, {routes: routeConfig}),
+    React.createElement(Router, {routes: routeConfig, history: createBrowserHistory()}),
     document.getElementById('rootElement'));
