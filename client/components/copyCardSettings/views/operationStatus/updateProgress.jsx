@@ -1,6 +1,7 @@
 import React from 'react';
 import LogView from '../../../../views/log.jsx';
 import Log from '../../models/log';
+import errorPrinter from '../../../../utils/errorPrinter';
 
 const T = React.PropTypes;
 
@@ -31,7 +32,7 @@ export default React.createClass({
             })
             .fail(e => {
                 if (this.isMounted()) {
-                    this.setState({isCompleted: true, error: e})
+                    this.setState({isCompleted: true, error: errorPrinter.getErrorText(e)})
                 }
             });
     },
