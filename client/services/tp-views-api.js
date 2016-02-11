@@ -5,7 +5,7 @@ class Api {
 
     }
 
-    doRequest(url, type = 'GET', data = null) {
+    doRequest(url, {type = 'GET', data = null} = {}) {
         const fullUrl = `/api` + url;
         return $.ajax({
             url: fullUrl,

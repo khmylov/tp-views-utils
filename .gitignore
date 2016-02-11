@@ -2,4 +2,3 @@
 build/
 node_modules/
 *.private.json
-server/tp-api/defaultTarget.private.json

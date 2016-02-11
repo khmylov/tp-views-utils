@@ -2,3 +2,11 @@ body {
   padding-top: 70px;
   padding-bottom: 20px;
 }
+
+.rootElement__loading-placeholder:before {
+  content: 'Loading...';
+}
+
+.rootElement__loading-placeholder {
+  text-align: center;
+}

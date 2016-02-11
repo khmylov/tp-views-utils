@@ -3,6 +3,8 @@ import Auth from '../../services/auth';
 import errorPrinter from '../../utils/errorPrinter';
 import './signIn.css';
 
+import defaultTestCredentials from './testCredentials.private.json';
+
 const T = React.PropTypes;
 
 export default React.createClass({
@@ -57,7 +59,7 @@ export default React.createClass({
         const {inputAccountName, inputPasswordToken} = this.refs;
         return {
             accountName: inputAccountName.value,
-            inputPasswordToken: inputPasswordToken.value
+            token: inputPasswordToken.value
         }
     },
 
@@ -78,6 +80,7 @@ export default React.createClass({
                             className="form-control"
                             placeholder="Your OnDemand account name"
                             required autofocus
+                            defaultValue={defaultTestCredentials.accountName}
                             disabled={isBusy}/>
                     </div>
 
@@ -88,6 +91,7 @@ export default React.createClass({
                             className="form-control"
                             placeholder="API token"
                             required
+                            defaultValue={defaultTestCredentials.token}
                             disabled={isBusy}/>
                     </div>
 

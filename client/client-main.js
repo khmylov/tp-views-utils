@@ -54,14 +54,18 @@ const routeConfig = {
     ]
 };
 
-render(
-    React.createElement(Router, {
-        routes: routeConfig,
-        history: browserHistory,
-        createElement(Component, props) {
-            return React.createElement(Component, _.assign({
-                auth: auth
-            }, props));
-        }
-    }),
-    document.getElementById('rootElement'));
+auth
+    .tryBuildSession()
+    .always(() => {
+        render(
+            React.createElement(Router, {
+                routes: routeConfig,
+                history: browserHistory,
+                createElement(Component, props) {
+                    return React.createElement(Component, _.assign({
+                        auth: auth
+                    }, props));
+                }
+            }),
+            document.getElementById('rootElement'));
+    });

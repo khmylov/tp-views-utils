@@ -6,23 +6,49 @@ export default React.createClass({
     displayName: 'index',
 
     render() {
+        const {isSignedIn} = this.props;
+
+        const label = isSignedIn ?
+            <p><span>Welcome! Choose what to do next.</span></p> :
+            null;
+
         return (
             <div className="jumbotron">
                 <h1>Hi there!</h1>
                 <p>
-                    This web application provides access to some experimental things for your Targetprocess account
+                    This web application provides access to some <abbr title="Beware and proceed with caution!">experimental</abbr> things for your Targetprocess account.
                     <br />
-                    Beware, and proceed with caution
                 </p>
+                {label}
+                {this._renderLinks()}
+            </div>
+        );
+    },
+
+    _renderLinks() {
+        const {isSignedIn} = this.props;
+        if (!isSignedIn) {
+            return (
                 <p>
                     <Link
                         className="btn btn-primary btn-lg"
-                        to={routes.copyCardSettings}
+                        to={routes.login}
                         role="button">
-                        Copy card settings between views
+                        Sign in to begin
                     </Link>
                 </p>
-            </div>
+            );
+        }
+
+        return (
+            <p>
+                <Link
+                    className="btn btn-primary"
+                    to={routes.copyCardSettings}
+                    role="button">
+                    Copy card settings between views
+                </Link>
+            </p>
         );
     }
 })

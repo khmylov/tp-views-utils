@@ -75,7 +75,7 @@ class ViewTreeModel {
 
     updateView(viewId, updateData) {
         return this._api
-            .doRequest(`/views/view/${viewId}`, 'POST', updateData);
+            .doRequest(`/views/view/${viewId}`, {type: 'POST', data: updateData});
     }
 
     copyCardSettings({fromViewId, toViewIds, optionIds}, log = nullLog, progress = nullProgress) {

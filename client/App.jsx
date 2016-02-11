@@ -1,8 +1,29 @@
 import React from 'react';
+import $ from 'jquery';
 import {Link} from 'react-router';
 import Index from './components/index/page.jsx';
+import LoadingStateWrapper from './views/loadingStateWrapper.jsx';
+import routes from './routes';
+import Auth from './services/auth';
 
 export default React.createClass({
+    propTypes: {
+        auth: React.PropTypes.instanceOf(Auth).isRequired
+    },
+
+    contextTypes: {
+        router: React.PropTypes.object.isRequired
+    },
+
+    _onSignOut() {
+        const {auth} = this.props;
+        auth
+            .signOut()
+            .always(() => {
+                this.context.router.replace(routes.login);
+            })
+    },
+
     render() {
         return (
             <div>
@@ -11,9 +32,11 @@ export default React.createClass({
                         <div className="navbar-header">
                             <Link to="/" className="navbar-brand">TP Views</Link>
                         </div>
-                        <div id="navbar" className="navbar-collapse collapse">
-                            <ul className="nav navbar-nav">
+                        <div id="navbar" className="collapse navbar-collapse">
+                            <ul className="nav navbar-nav navbar-right">
+                                {this._renderUserInfo()}
                             </ul>
+
                         </div>
                     </div>
                 </nav>
@@ -26,11 +49,30 @@ export default React.createClass({
     },
 
     _renderContent() {
-        const {children} = this.props;
+        const {children, auth} = this.props;
         if (children) {
             return children;
         }
 
-        return <Index />;
+        return <Index isSignedIn={auth.isLoggedIn()}/>;
+    },
+
+    _renderUserInfo() {
+        const {auth} = this.props;
+        if (!auth.isLoggedIn()) {
+            return null;
+        }
+
+        return (
+            <p className="navbar-text navbar-right">
+                <span>Signed in to {auth.getAccountName()} | </span>
+                <a
+                    className="navbar-link"
+                    role="button"
+                    onClick={this._onSignOut}>
+                    Sign out
+                </a>
+            </p>
+        );
     }
 })

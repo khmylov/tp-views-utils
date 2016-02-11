@@ -12,20 +12,11 @@ class TpViewsApi {
 
     createOrUpdateView(viewId, data) {
         return this
-            ._doRequest(`/view/${viewId}`, 'POST', data);
+            ._doRequest(`/view/${viewId}`, {type: 'POST', data});
     }
 
-    _doRequest(relativeUrl, type = 'GET', data = null) {
-        const options = {
-            method: type,
-            uri: `${this._target.url}/api/views/v1` + relativeUrl,
-            qs: {
-                token: this._target.token
-            },
-            json: data
-        };
-
-        return rp(options);
+    _doRequest(relativeUrl, config) {
+        return rp(this._target.createRequestOptions('/api/views/v1' + relativeUrl, config));
     }
 }
 

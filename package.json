@@ -5,6 +5,7 @@
     "bootstrap-sass": "^3.3.6",
     "classnames": "^2.2.3",
     "express": "^4.13.4",
+    "express-session": "^1.13.0",
     "immutable": "^3.7.6",
     "jquery": "^2.2.0",
     "lodash": "^4.2.1",
