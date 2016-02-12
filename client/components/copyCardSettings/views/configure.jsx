@@ -204,7 +204,7 @@ export default React.createClass({
                     <input
                         className="form-control pull-right"
                         type="text"
-                        placeholder="Filter by name"
+                        placeholder="Filter by name..."
                         value={targetViewFilterText}
                         onChange={this._onTargetViewFilterChanged}/>
                     <a onClick={this._toggleDisplayUnavailableTargets} className="btn btn-link pull-right">

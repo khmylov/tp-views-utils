@@ -7,6 +7,18 @@
   padding: 5px 10px;
 }
 
+.copyCardSettings__source-tree {
+  font-size: 12px;
+}
+
+.copyCardSettings__source-tree__filter {
+  width: 100% !important;
+}
+
+.copyCardSettings__source-tree__group {
+  margin-bottom: 10px !important;
+}
+
 .copyCardSettings__target-list__target--disabled > td:not(.danger) {
   color: #888;
 }
