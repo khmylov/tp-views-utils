@@ -188,29 +188,8 @@ export default React.createClass({
     },
 
     _renderTargetViewsSelector() {
-        const {viewGroups} = this.props;
-        const {selectedTargetViewIds, displayUnavailableTargetViews, sourceViewId} = this.state;
-
-        const sourceView = this._getSourceView();
-        const sourceViewData = sourceView ? sourceView.getViewData() : null;
-
-        const views = Transforms
-            .flattenViews(viewGroups)
-            .filter(v => v.key !== sourceViewId);
-
-        const validationContext = this._createValidationContext();
-
-        const viewDtos = views.map(v => {
-            const validationResult = sourceViewData ?
-                Validation.validateViewForCopySettings(sourceViewData, v.getViewData(), validationContext) :
-                {success: false, error: 'Source view was not found'};
-            return {
-                name: v.name,
-                key: v.key,
-                validationState: validationResult,
-                viewData: v.getViewData()
-            };
-        });
+        const {selectedTargetViewIds, displayUnavailableTargetViews} = this.state;
+        const viewGroupDtos = this._buildViewGroupDtos();
 
         return (
             <div>
@@ -222,12 +201,55 @@ export default React.createClass({
                 </div>
                 <br />
                 <TargetViewsTree
-                    views={viewDtos}
+                    viewGroups={viewGroupDtos}
                     selectedViewIds={selectedTargetViewIds}
                     onSelectedViewIdsChanged={this._setNewSelectedViewIds}
                     displayUnavailable={displayUnavailableTargetViews}/>
             </div>
         );
+    },
+
+    _buildViewGroupDtos() {
+        const {viewGroups} = this.props;
+        const {sourceViewId, displayUnavailableTargetViews} = this.state;
+
+        const sourceView = this._getSourceView();
+        const sourceViewData = sourceView ? sourceView.getViewData() : null;
+        const validationContext = this._createValidationContext();
+
+        return Immutable
+            .Seq(viewGroups)
+            .map(viewGroup => {
+                var viewDtos = Immutable
+                    .Seq(viewGroup.children)
+                    .filter(v => v.key !== sourceViewId)
+                    .map(v => {
+                        const validationResult = sourceViewData ?
+                            Validation.validateViewForCopySettings(sourceViewData, v.getViewData(), validationContext) :
+                        {success: false, error: 'Source view was not found'};
+                        return {
+                            name: v.name,
+                            key: v.key,
+                            validationState: validationResult,
+                            viewData: v.getViewData()
+                        };
+                    });
+
+                if (!displayUnavailableTargetViews) {
+                    viewDtos = viewDtos
+                        .filter(({validationState}) => validationState.success);
+                }
+
+                viewDtos = viewDtos.toList();
+
+                return {
+                    groupId: viewGroup.key,
+                    groupName: viewGroup.name,
+                    children: viewDtos
+                };
+            })
+            .filter(f => f.children.size)
+            .toList();
     },
 
     _renderApplyButton() {

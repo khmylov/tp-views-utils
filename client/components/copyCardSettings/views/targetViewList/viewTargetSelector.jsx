@@ -10,8 +10,7 @@ export default React.createClass({
     propTypes: {
         selectedViewIds: T.instanceOf(Immutable.Set).isRequired,
         onSelectedViewIdsChanged: T.func.isRequired,
-        views: T.instanceOf(Immutable.Iterable).isRequired,
-        displayUnavailable: T.bool.isRequired
+        viewGroups: T.instanceOf(Immutable.Iterable).isRequired
     },
 
     _toggleSelectedView(viewId, isSelected) {
@@ -24,22 +23,6 @@ export default React.createClass({
     },
 
     render() {
-        const {selectedViewIds, views, displayUnavailable} = this.props;
-        const viewsToDisplay = displayUnavailable ?
-            views :
-            views.filter(({validationState}) => validationState.success);
-
-        const viewItems = viewsToDisplay.map(v => {
-            return <SelectableView
-                key={v.key}
-                viewId={v.key}
-                name={v.name}
-                viewData={v.viewData}
-                validationState={v.validationState}
-                isSelected={selectedViewIds.has(v.key)}
-                onChange={this._toggleSelectedView}/>;
-        });
-
         return (
             <table className="table table-condensed table-bordered">
                 <thead>
@@ -51,9 +34,39 @@ export default React.createClass({
                     </tr>
                 </thead>
                 <tbody>
-                    {viewItems}
+                    {this._renderTableRows()}
                 </tbody>
             </table>
         );
+    },
+
+    _renderTableRows() {
+        const rows = [];
+
+        const {selectedViewIds, viewGroups} = this.props;
+
+        viewGroups.forEach(viewGroup => {
+            const groupDisplayName = viewGroup.groupName ? `[${viewGroup.groupName}]` : '<No group>';
+            rows.push((
+                <tr key={viewGroup.groupId} className="active">
+                    <td colSpan="4">{groupDisplayName}</td>
+                </tr>
+            ));
+
+            viewGroup.children.forEach(v => {
+                rows.push((
+                    <SelectableView
+                        key={v.key}
+                        viewId={v.key}
+                        name={v.name}
+                        viewData={v.viewData}
+                        validationState={v.validationState}
+                        isSelected={selectedViewIds.has(v.key)}
+                        onChange={this._toggleSelectedView}/>
+                ));
+            });
+        });
+
+        return rows;
     }
 });
