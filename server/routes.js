@@ -1,9 +1,9 @@
 import fs from 'fs';
 import path from 'path';
-
+import _ from 'lodash';
 import TpTarget from './tp-api/target';
 import TpViewsApi from './tp-api/views';
-import TpTestAuthApi from './tp-api/testAuth';
+import TpAuthenticationApi from './tp-api/authentication';
 
 // TODO: brush up error handling and responses
 
@@ -31,17 +31,24 @@ function tryAuthenticate(req, res, target) {
         return;
     }
 
-    const api = new TpTestAuthApi(target);
+    const api = new TpAuthenticationApi(target);
     return api
         .tryAuthenticate()
         .then(r => {
-            const token = JSON.parse(r).Token;
+            const authenticatedUserInfo = JSON.parse(r);
             const accountName = target.accountName;
-            req.session.tokenType = 'password-based';
-            req.session.tokenValue = token;
-            req.session.accountName = accountName;
-            res.end(JSON.stringify({
+            _.assign(req.session, {
+                tokenType: 'password-based',
+                tokenValue: target.token,
                 accountName: accountName
+            });
+
+            res.end(JSON.stringify({
+                accountName: accountName,
+                firstName: authenticatedUserInfo.FirstName,
+                lastName: authenticatedUserInfo.LastName,
+                login: authenticatedUserInfo.Login,
+                userId: authenticatedUserInfo.Id
             }));
         })
         .catch(e => {

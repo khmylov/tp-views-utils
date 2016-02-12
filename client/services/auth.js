@@ -1,15 +1,28 @@
 import Immutable from 'immutable';
 import $ from 'jquery';
 
-const SessionRecord = Immutable.Record({accountName: ''});
+/**
+ * @class SessionInfo
+ */
+const SessionRecord = Immutable.Record({accountName: '', firstName: '', lastName: '', userId: null});
 
-export default class Auth {
+/**
+ * @class AuthService
+ */
+export default class AuthService {
     constructor() {
         this._sessionInfo = null;
     }
 
     isLoggedIn() {
         return Boolean(this._sessionInfo);
+    }
+
+    /**
+     * @returns {null|SessionInfo}
+     */
+    getSessionInfo() {
+        return this._sessionInfo;
     }
 
     getAccountName() {
@@ -25,14 +38,14 @@ export default class Auth {
                 type: 'GET',
                 dataType: 'json'
             })
-            .then(r => {
-                this._sessionInfo = new SessionRecord({accountName: r.accountName});
+            .then(response => {
+                this._sessionInfo = AuthService._createSessionFromResponse(response);
                 return this._sessionInfo;
             })
     }
 
     tryAuthorize({accountName, token}) {
-        const verifiedAccountName = Auth._tryParseAccountName(accountName);
+        const verifiedAccountName = AuthService._tryParseAccountName(accountName);
         if (!verifiedAccountName) {
             return $.Deferred().reject('Account name should either be a simple string ("someaccount") or on-demand url ("https://someaccount.tpondemand.com"))');
         }
@@ -45,18 +58,10 @@ export default class Auth {
                 contentType: 'application/json',
                 dataType: 'json'
             })
-            .then(r => {
-                this._sessionInfo = new SessionRecord({accountName: verifiedAccountName});
+            .then(response => {
+                this._sessionInfo = AuthService._createSessionFromResponse(response);
                 return this._sessionInfo;
             });
-
-        //var def = $.Deferred();
-        //setTimeout(() => {
-        //    this._sessionInfo = new SessionRecord({accountName: verifiedAccountName, token: token});
-        //    def.resolve(this._sessionInfo);
-        //}, 1000);
-        //
-        //return def.promise();
     }
 
     signOut() {
@@ -66,6 +71,10 @@ export default class Auth {
             type: 'POST',
             dataType: 'json'
         });
+    }
+
+    static _createSessionFromResponse({accountName, firstName, lastName, userId}) {
+        return new SessionRecord({accountName, firstName, lastName, userId});
     }
 
     static _tryParseAccountName(input) {

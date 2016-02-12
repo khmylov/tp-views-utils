@@ -1,15 +1,10 @@
 import _ from 'lodash';
-
-function assertNotEmptyString(s, argumentName) {
-    if (!_.isString(s) || !s.length) {
-        throw new Error(`'${argumentName}' should be a non-empty string`);
-    }
-}
+import guard from '../../shared/utils/guard';
 
 class Target {
     constructor({accountName, token}) {
-        assertNotEmptyString(accountName);
-        assertNotEmptyString(token);
+        guard.notEmptyString(accountName);
+        guard.notEmptyString(token);
 
         this._accountName = accountName;
         this._token = token;

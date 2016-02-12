@@ -63,9 +63,11 @@ export default React.createClass({
             return null;
         }
 
+        const {accountName, firstName, lastName} = auth.getSessionInfo();
+
         return (
             <p className="navbar-text navbar-right">
-                <span>Signed in to {auth.getAccountName()} | </span>
+                <span>Signed in as {firstName} {lastName} @ {accountName} | </span>
                 <a
                     className="navbar-link"
                     role="button"

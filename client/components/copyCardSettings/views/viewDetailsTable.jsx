@@ -1,4 +1,4 @@
-import React from 'react'
+import React from 'react';
 import ViewInfo from '../models/viewInfo';
 
 const T = React.PropTypes;

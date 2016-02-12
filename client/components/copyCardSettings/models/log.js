@@ -1,6 +1,9 @@
-import $ from 'jquery'
+import $ from 'jquery';
 import _ from 'lodash';
 
+/**
+ * @class Log
+ */
 export default class Log {
     constructor() {
         this.onLogAppend = $.Callbacks();

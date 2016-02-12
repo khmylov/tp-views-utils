@@ -1,8 +1,15 @@
-import $ from 'jquery'
+import $ from 'jquery';
 
-class Api {
+/**
+ * @class TpViewsApi
+ */
+export default class TpViewsApi {
     constructor() {
 
+    }
+
+    updateView(viewId, updateData) {
+        return this.doRequest(`/views/view/${viewId}`, {type: 'POST', data: updateData});
     }
 
     doRequest(url, {type = 'GET', data = null} = {}) {
@@ -15,6 +22,4 @@ class Api {
             dataType: 'json'
         })
     }
-}
-
-export default Api;
+};
