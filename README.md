@@ -18,3 +18,7 @@ Build assets and run the server
 ```
 gulp run
 ```
+
+# Usecases
+
+- [Copy view settings](https://github.com/khmylov/tp-views-utils/blob/master/docs/copyCardSettings.md "Copy view settings")
