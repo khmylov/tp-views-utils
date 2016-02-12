@@ -65,7 +65,15 @@ export default React.createClass({
 
         return (
             <p className="navbar-text navbar-right">
-                <span>Signed in as {firstName} {lastName} @ {accountName} | </span>
+                <span>Signed in as </span>
+                <span>{firstName} {lastName}</span>
+                <span> @ </span>
+                <a
+                    className="navbar-link"
+                    href={'https://' + accountName + '.tpondemand.com'}>
+                    {accountName}
+                </a>
+                <span> | </span>
                 <a
                     className="navbar-link"
                     role="button"
