@@ -54,7 +54,11 @@ class ViewTreeModel {
 
     loadAllViews() {
         return this._api
-            .doRequest('/views')
+            .doRequest('/views', {
+                data: {
+                    select: '{key,name,menuGroupKey,ownerIds,x,y,cells,colorSettings,cardSettings,viewMode,itemType}'
+                }
+            })
             .then(response => {
                 this.groupModels = Immutable
                     .Seq(response.items)

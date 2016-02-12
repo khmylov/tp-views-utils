@@ -1,4 +1,5 @@
 import React from 'react';
+import {Link} from 'react-router';
 import LogView from 'client/views/log.jsx';
 import Log from '../../models/log';
 import errorPrinter from 'client/utils/errorPrinter';
@@ -59,7 +60,7 @@ export default React.createClass({
             return (
                 <div className="alert alert-danger">
                     <span>
-                        Error occurred
+                        Finished with some errors
                     </span>
                     <br />
                     <pre>
@@ -69,6 +70,13 @@ export default React.createClass({
             );
         }
 
-        return <div className="alert alert-success">All done</div>;
+        return (
+            <div className="alert alert-success">
+                <span>All done! You can go back to the </span>
+                <Link to="/">home page</Link>
+                <span> or start a </span>
+                <Link to="/">new session</Link>
+            </div>
+        );
     }
 });

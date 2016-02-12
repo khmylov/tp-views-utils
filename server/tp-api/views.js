@@ -1,13 +1,19 @@
-import rp from 'request-promise'
+import rp from 'request-promise';
 
 class TpViewsApi {
     constructor(target) {
         this._target = target;
     }
 
-    getAllViews() {
+    getAllViews({select} = {}) {
+        console.log('~select:', select);
+        const qs = {};
+        if (select) {
+            qs.select = select;
+        }
+
         return this
-            ._doRequest('/');
+            ._doRequest('/', {qs: qs});
     }
 
     createOrUpdateView(viewId, data) {

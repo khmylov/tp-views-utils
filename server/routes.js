@@ -1,5 +1,5 @@
-import fs from 'fs';
-import path from 'path';
+/* eslint no-console: 0 */
+
 import _ from 'lodash';
 import TpTarget from './tp-api/target';
 import TpViewsApi from './tp-api/views';
@@ -15,6 +15,17 @@ function buildTargetFromSession({tokenValue, accountName}) {
     return new TpTarget({accountName: accountName, token: tokenValue});
 }
 
+function getTargetFromSessionOrEnd(req, res) {
+    const target = buildTargetFromSession(req.session);
+    if (!target) {
+        clearAuthSession(req.session);
+        res.sendStatus(401);
+        return;
+    }
+
+    return target;
+}
+
 function clearAuthSession(session) {
     console.log('Clearing out session');
 
@@ -24,7 +35,6 @@ function clearAuthSession(session) {
 }
 
 function tryAuthenticate(req, res, target) {
-    console.log('Target', target);
     if (!target) {
         clearAuthSession(req.session);
         res.sendStatus(401);
@@ -55,7 +65,7 @@ function tryAuthenticate(req, res, target) {
             clearAuthSession(req.session);
             res.sendStatus(401);
             return e;
-        })
+        });
 }
 
 export default app => {
@@ -64,7 +74,6 @@ export default app => {
     });
 
     app.post('/login', (req, res) => {
-        console.log(req.session);
         const {accountName, token} = req.body;
 
         if (!accountName || !accountName.length || !token || !token.length) {
@@ -86,10 +95,14 @@ export default app => {
     });
 
     app.get('/api/views/', (req, res) => {
-        const target = buildTargetFromSession(req.session);
+        const target = getTargetFromSessionOrEnd(req, res);
+        if (!target) {
+            return;
+        }
+
         const api = new TpViewsApi(target);
         api
-            .getAllViews()
+            .getAllViews({select: req.query.select})
             .then(r => {
                 res.end(r);
             })
@@ -100,11 +113,12 @@ export default app => {
     });
 
     app.post('/api/views/view/:viewId', (req, res) => {
+        const target = getTargetFromSessionOrEnd(req, res);
+        if (!target) {
+            return;
+        }
+
         const viewId = req.params.viewId;
-
-        console.log(`Received viewId: ${viewId}. Body: ${JSON.stringify(req.body)}.`);
-
-        const target = buildTargetFromSession(req.session);
         const api = new TpViewsApi(target);
         api
             .createOrUpdateView(viewId, req.body)

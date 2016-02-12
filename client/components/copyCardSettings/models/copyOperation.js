@@ -6,10 +6,6 @@ import Transforms from './viewTransforms';
 import Validation from './validation';
 
 const nullLog = new Log();
-const nullProgress = {
-    onNext: _.noop,
-    onCompleted: _.noop
-};
 
 export default class CopyOperation {
     /**
@@ -40,7 +36,7 @@ export default class CopyOperation {
 
             const targetViewData = targetView.getViewData();
             const validationContext = {
-                session: session,
+                sessionInfo: session,
                 optionIds: optionIds
             };
             const validationResult = Validation.validateViewForCopySettings(sourceViewData, targetViewData, validationContext);
@@ -70,7 +66,7 @@ export default class CopyOperation {
 
         return CopyOperation
             ._runPromiseSeq(targetViews, runForView)
-            .then(() => log.append('All done'))
+            .then(() => log.append('All done'));
     }
 
     static _runPromiseSeq(items, createPromise) {
