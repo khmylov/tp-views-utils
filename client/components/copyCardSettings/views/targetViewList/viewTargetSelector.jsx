@@ -30,7 +30,7 @@ export default React.createClass({
                         <th>Pick?</th>
                         <th>View type</th>
                         <th>Cell types</th>
-                        <th>Errors</th>
+                        <th>Status</th>
                     </tr>
                 </thead>
                 <tbody>

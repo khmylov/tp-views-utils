@@ -1,5 +1,6 @@
 import React from 'react';
 import Immutable from 'immutable';
+import _ from 'lodash';
 
 import SourceViewTree from './sourceViewSelector/groupList.jsx';
 import TargetViewsTree from './targetViewList/viewTargetSelector.jsx';
@@ -35,12 +36,17 @@ export default React.createClass({
             sourceViewId: null,
             selectedTargetViewIds: Immutable.Set(),
             enabledOptionIds: Immutable.Set.of('units-cells'),
-            displayUnavailableTargetViews: false
+            displayUnavailableTargetViews: false,
+            targetViewFilterText: ''
         };
     },
 
     _toggleDisplayUnavailableTargets() {
         this.setState({displayUnavailableTargetViews: !this.state.displayUnavailableTargetViews});
+    },
+
+    _onTargetViewFilterChanged(e) {
+        this.setState({targetViewFilterText: e.target.value.toLowerCase()});
     },
 
     _setViewAsCurrent(newViewId) {
@@ -188,15 +194,21 @@ export default React.createClass({
     },
 
     _renderTargetViewsSelector() {
-        const {selectedTargetViewIds, displayUnavailableTargetViews} = this.state;
+        const {selectedTargetViewIds, displayUnavailableTargetViews, targetViewFilterText} = this.state;
         const viewGroupDtos = this._buildViewGroupDtos();
 
         return (
             <div>
-                <div>
-                    <span>Choose a set of views to apply the settings to</span>
+                <div className="form-inline">
+                    <p className="form-control-static">Choose a set of views to apply the settings to</p>
+                    <input
+                        className="form-control pull-right"
+                        type="text"
+                        placeholder="Filter by name"
+                        value={targetViewFilterText}
+                        onChange={this._onTargetViewFilterChanged}/>
                     <a onClick={this._toggleDisplayUnavailableTargets} className="btn btn-link pull-right">
-                        {displayUnavailableTargetViews ? 'Click to display only valid views' : 'Click to display all views'}
+                        {displayUnavailableTargetViews ? 'Click to display only matching views' : 'Click to display all views'}
                     </a>
                 </div>
                 <br />
@@ -211,7 +223,7 @@ export default React.createClass({
 
     _buildViewGroupDtos() {
         const {viewGroups} = this.props;
-        const {sourceViewId, displayUnavailableTargetViews} = this.state;
+        const {sourceViewId, displayUnavailableTargetViews, targetViewFilterText} = this.state;
 
         const sourceView = this._getSourceView();
         const sourceViewData = sourceView ? sourceView.getViewData() : null;
@@ -235,7 +247,10 @@ export default React.createClass({
                         };
                     });
 
-                if (!displayUnavailableTargetViews) {
+                if (targetViewFilterText && targetViewFilterText.length) {
+                    viewDtos = viewDtos
+                        .filter(({name}) => name && _.includes(name.toLowerCase(), targetViewFilterText));
+                } else if (!displayUnavailableTargetViews) {
                     viewDtos = viewDtos
                         .filter(({validationState}) => validationState.success);
                 }
