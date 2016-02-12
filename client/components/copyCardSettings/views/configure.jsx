@@ -9,6 +9,8 @@ import ViewDetailsTable from './viewDetailsTable.jsx';
 import Transforms from '../models/viewTransforms';
 import Validation from '../models/validation';
 
+import SessionInfo from 'client/services/sessionInfo';
+
 const T = React.PropTypes;
 
 const copyOptionMap = Immutable.Map({
@@ -24,7 +26,8 @@ export default React.createClass({
     displayName: 'copyCardSettingsConfigureScreen',
     propTypes: {
         viewGroups: T.instanceOf(Immutable.Iterable).isRequired,
-        runOperation: T.func.isRequired
+        runOperation: T.func.isRequired,
+        sessionInfo: T.instanceOf(SessionInfo).isRequired
     },
 
     getInitialState() {
@@ -75,6 +78,13 @@ export default React.createClass({
         return Transforms.findViewById(this.props.viewGroups, this.state.sourceViewId);
     },
 
+    _createValidationContext() {
+        return {
+            sessionInfo: this.props.sessionInfo,
+            optionIds: this.state.enabledOptionIds.toArray()
+        };
+    },
+
     render() {
         return (
             <div className="row">
@@ -98,7 +108,7 @@ export default React.createClass({
     },
 
     _renderOptionsColumn() {
-        const {sourceViewId, enabledOptionIds} = this.state;
+        const {sourceViewId} = this.state;
 
         if (!sourceViewId) {
             return <div>Pick a view from the list to copy card settings from</div>;
@@ -113,7 +123,7 @@ export default React.createClass({
 
         const sourceViewData = sourceView.getViewData();
 
-        const sourceViewValidationResult = Validation.validateSourceView(sourceViewData, enabledOptionIds.toArray());
+        const sourceViewValidationResult = Validation.validateSourceView(sourceViewData, this._createValidationContext());
         const copyForm = sourceViewValidationResult.success ?
             <form onSubmit={this._onOperationSubmit}>
                 {this._renderTargetViewsSelector()}
@@ -179,7 +189,7 @@ export default React.createClass({
 
     _renderTargetViewsSelector() {
         const {viewGroups} = this.props;
-        const {selectedTargetViewIds, enabledOptionIds, displayUnavailableTargetViews, sourceViewId} = this.state;
+        const {selectedTargetViewIds, displayUnavailableTargetViews, sourceViewId} = this.state;
 
         const sourceView = this._getSourceView();
         const sourceViewData = sourceView ? sourceView.getViewData() : null;
@@ -188,9 +198,11 @@ export default React.createClass({
             .flattenViews(viewGroups)
             .filter(v => v.key !== sourceViewId);
 
+        const validationContext = this._createValidationContext();
+
         const viewDtos = views.map(v => {
             const validationResult = sourceViewData ?
-                Validation.validateViewForCopySettings(sourceViewData, v.getViewData(), enabledOptionIds) :
+                Validation.validateViewForCopySettings(sourceViewData, v.getViewData(), validationContext) :
                 {success: false, error: 'Source view was not found'};
             return {
                 name: v.name,

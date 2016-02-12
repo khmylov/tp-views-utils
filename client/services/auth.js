@@ -1,10 +1,5 @@
-import Immutable from 'immutable';
 import $ from 'jquery';
-
-/**
- * @class SessionInfo
- */
-const SessionRecord = Immutable.Record({accountName: '', firstName: '', lastName: '', userId: null});
+import SessionInfo from './sessionInfo';
 
 /**
  * @class AuthService
@@ -73,8 +68,8 @@ export default class AuthService {
         });
     }
 
-    static _createSessionFromResponse({accountName, firstName, lastName, userId}) {
-        return new SessionRecord({accountName, firstName, lastName, userId});
+    static _createSessionFromResponse(loginResponse) {
+        return new SessionInfo(loginResponse);
     }
 
     static _tryParseAccountName(input) {

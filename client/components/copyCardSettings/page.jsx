@@ -72,7 +72,8 @@ export default React.createClass({
         return (
             <ConfigureScreen
                 viewGroups={this._model.groupModels}
-                runOperation={this._scheduleOperation}/>
+                runOperation={this._scheduleOperation}
+                sessionInfo={this.props.auth.getSessionInfo()}/>
         );
     }
 })

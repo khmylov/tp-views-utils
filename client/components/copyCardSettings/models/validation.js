@@ -4,18 +4,22 @@ const validationOk = Object.freeze({success: true});
 const validationError = message => ({success: false, error: message});
 const validationWarning = message => ({success: true, warning: message});
 
+function getCellTypes({cells}) {
+    return _.orderBy(cells ? cells.types || [] : [], _.identity);
+}
+
 const Validation = {
     _validationRules: {
         'cellTypes'(sourceViewData, targetViewData) {
-            const sourceCellTypes = Validation._getCellTypes(sourceViewData);
-            const targetCellTypes = Validation._getCellTypes(targetViewData);
+            const sourceCellTypes = getCellTypes(sourceViewData);
+            const targetCellTypes = getCellTypes(targetViewData);
 
             if (!sourceCellTypes.length) {
-                return validationError('Source doesn\'t have configured cards');
+                return validationError('Source view doesn\'t have configured cards');
             }
 
             if (!targetCellTypes.length) {
-                return validationError('Target doesn\'t have configured cards');
+                return validationError('Target view doesn\'t have configured cards');
             }
 
             if (_.isEqual(sourceCellTypes, targetCellTypes)) {
@@ -39,7 +43,7 @@ const Validation = {
 
             const targetItemType = targetViewData.itemType;
             if (targetItemType !== sourceItemType) {
-                return validationError(`Source and target item type should match. Source: '${sourceItemType}'. Target: '${targetItemType}'`)
+                return validationError(`Source and target item type should match. Source: '${sourceItemType}'. Target: '${targetItemType}'`);
             }
 
             const targetViewMode = targetViewData.viewMode;
@@ -48,14 +52,35 @@ const Validation = {
             }
 
             return validationOk;
+        },
+
+        'accessRights'(sourceViewData, targetViewData, validationContext) {
+            const {ownerIds} = targetViewData;
+            if (!_.isArray(ownerIds)) {
+                return validationError('You don\'t have required permissions to change settings for this view (no ownerIds on target)');
+            }
+
+            const {userId} = validationContext.sessionInfo;
+            if (!_.includes(ownerIds, userId)) {
+                return validationError('You must be one of the owners of this view to change its settings');
+            }
+
+            return validationOk;
         }
     },
 
-    validateViewForCopySettings(sourceViewData, targetViewData, copyOptions) {
-        return this._chainValidations(sourceViewData, targetViewData);
+    validateViewForCopySettings(sourceViewData, targetViewData, validationContext) {
+        const brokenRule = _
+            .chain(Validation._validationRules)
+            .map(rule => rule(sourceViewData, targetViewData, validationContext))
+            .find(validationResult => !validationResult.success)
+            .value();
+
+        return brokenRule || validationOk;
     },
 
-    validateSourceView(sourceViewData, copyOptions) {
+    validateSourceView(sourceViewData, validationContext) {
+        const {copyOptions} = validationContext;
         var messages = [];
 
         if (_.includes(copyOptions, 'units-cells') && !sourceViewData.cardSettings) {
@@ -71,20 +96,6 @@ const Validation = {
         }
 
         return validationOk;
-    },
-
-    _chainValidations(sourceViewData, targetViewData) {
-        const brokenRule = _
-            .chain(Validation._validationRules)
-            .map((rule, ruleName) => rule(sourceViewData, targetViewData))
-            .find(validationResult => !validationResult.success)
-            .value();
-
-        return brokenRule || validationOk;
-    },
-
-    _getCellTypes({cells}) {
-        return _.orderBy(cells ? cells.types || [] : [], _.identity);
     }
 };
 

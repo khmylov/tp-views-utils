@@ -39,7 +39,11 @@ export default class CopyOperation {
             }
 
             const targetViewData = targetView.getViewData();
-            const validationResult = Validation.validateViewForCopySettings(sourceViewData, targetViewData, optionIds);
+            const validationContext = {
+                session: session,
+                optionIds: optionIds
+            };
+            const validationResult = Validation.validateViewForCopySettings(sourceViewData, targetViewData, validationContext);
             if (!validationResult.success) {
                 acc.targetErrors.push(`Validation error for target view '${viewId}': ${validationResult.error}`);
                 return acc;
