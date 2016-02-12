@@ -37,6 +37,6 @@ export default React.createClass({
                     rows={rows}
                     ref="output" />
             </div>
-        )
+        );
     }
 });

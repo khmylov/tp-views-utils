@@ -1,8 +1,6 @@
 import React from 'react';
-import $ from 'jquery';
 import {Link} from 'react-router';
 import Index from './components/index/page.jsx';
-import LoadingStateWrapper from './views/loadingStateWrapper.jsx';
 import routes from './routes';
 import Auth from './services/auth';
 
@@ -21,7 +19,7 @@ export default React.createClass({
             .signOut()
             .always(() => {
                 this.context.router.replace(routes.login);
-            })
+            });
     },
 
     render() {

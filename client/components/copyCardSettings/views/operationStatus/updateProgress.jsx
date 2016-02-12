@@ -1,7 +1,7 @@
 import React from 'react';
-import LogView from '../../../../views/log.jsx';
+import LogView from 'client/views/log.jsx';
 import Log from '../../models/log';
-import errorPrinter from '../../../../utils/errorPrinter';
+import errorPrinter from 'client/utils/errorPrinter';
 
 const T = React.PropTypes;
 
@@ -16,7 +16,7 @@ export default React.createClass({
         return {
             isCompleted: false,
             error: null
-        }
+        };
     },
 
     componentWillMount() {
@@ -25,14 +25,14 @@ export default React.createClass({
 
     componentDidMount() {
         this.props.startOperation(this._log)
-            .done(_ => {
+            .done(() => {
                 if (this.isMounted()) {
                     this.setState({isCompleted: true, error: null});
                 }
             })
             .fail(e => {
                 if (this.isMounted()) {
-                    this.setState({isCompleted: true, error: errorPrinter.getErrorText(e)})
+                    this.setState({isCompleted: true, error: errorPrinter.getErrorText(e)});
                 }
             });
     },

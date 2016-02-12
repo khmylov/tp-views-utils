@@ -68,7 +68,7 @@ export default React.createClass({
             sourceViewId,
             targetViewIds: selectedTargetViewIds,
             copyOptions: enabledOptionIds
-        })
+        });
     },
 
     _getSourceView() {
@@ -94,7 +94,7 @@ export default React.createClass({
                 groups={this.props.viewGroups}
                 currentViewId={this.state.sourceViewId}
                 setViewAsCurrent={this._setViewAsCurrent}/>
-        )
+        );
     },
 
     _renderOptionsColumn() {

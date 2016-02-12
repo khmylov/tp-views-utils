@@ -34,7 +34,7 @@ const DetailsTable = React.createClass({
                     </tr>
                 </tbody>
             </table>
-        )
+        );
     }
 });
 

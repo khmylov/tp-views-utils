@@ -1,3 +1,5 @@
+/* eslint no-console: 0 */
+
 var gulp = require('gulp');
 var fs = require('fs');
 var path = require('path');
@@ -5,7 +7,7 @@ var webpack = require('webpack');
 var nodemon = require('nodemon');
 var DeepMerge = require('deep-merge');
 
-var deepmerge = DeepMerge(function(target, source, key) {
+var deepmerge = DeepMerge(function(target, source) {
     if(target instanceof Array) {
         return [].concat(target, source);
     }
@@ -17,7 +19,9 @@ const globalExclude = /node_modules/;
 // generic
 
 var defaultConfig = {
-    resolve: { extensions: [ '', '.js' ] },
+    resolve: {
+        extensions: [ '', '.js' ]
+    },
     module: {
         loaders: [
             {
@@ -49,6 +53,11 @@ function config(overrides) {
 // frontend
 
 var frontendConfig = config({
+    resolve: {
+        root: [
+            path.resolve(__dirname)
+        ]
+    },
     entry: ['./client/client-main.js', 'bootstrap-loader'],
     output: {
         path: path.join(__dirname, 'build/static'),
@@ -117,7 +126,7 @@ function onBuild(done) {
         if(done) {
             done();
         }
-    }
+    };
 }
 
 gulp.task('frontend-build', function(done) {

@@ -25,7 +25,7 @@ const CopyOption = React.createClass({
                     {this.props.name}
                 </label>
             </div>
-        )
+        );
     }
 });
 
@@ -39,8 +39,7 @@ export default React.createClass({
     },
 
     _onOptionEnabledChanged(optionId, newIsEnabled) {
-        /** @type Immutable.List */
-        const {options, enabledOptionIds, onEnabledChanged} = this.props;
+        const {enabledOptionIds, onEnabledChanged} = this.props;
         const newEnabledIds = newIsEnabled ?
             enabledOptionIds.add(optionId) :
             enabledOptionIds.delete(optionId);

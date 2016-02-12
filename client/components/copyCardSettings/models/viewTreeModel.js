@@ -1,18 +1,9 @@
 import _ from 'lodash';
-import $ from 'jquery';
 import Immutable from 'immutable';
-import guard from '../../../../shared/utils/guard';
 import Api from '../../../services/tp-views-api';
 import Log from './log';
 
 import Transforms from './viewTransforms';
-import Validation from './validation';
-
-const nullLog = new Log();
-const nullProgress = {
-    onNext: _.noop,
-    onCompleted: _.noop
-};
 
 class ViewModel {
     constructor(itemData) {
@@ -35,9 +26,8 @@ class ViewModel {
 
 class ViewGroupModel {
     constructor({itemData, children}, log) {
-        const {key, name} = itemData;
-        this.name = name;
-        this.key = key;
+        this.name = itemData.name;
+        this.key = itemData.key;
         this._log = log;
 
         this.children = Immutable

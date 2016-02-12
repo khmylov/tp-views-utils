@@ -42,9 +42,9 @@ export default React.createClass({
                     const {router} = this.context;
 
                     if (location.state && location.state.nextPathname) {
-                        router.replace(location.state.nextPathname)
+                        router.replace(location.state.nextPathname);
                     } else {
-                        router.replace('/')
+                        router.replace('/');
                     }
                 }
             })
@@ -60,7 +60,7 @@ export default React.createClass({
         return {
             accountName: inputAccountName.value,
             token: inputPasswordToken.value
-        }
+        };
     },
 
     render() {

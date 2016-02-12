@@ -1,4 +1,4 @@
-import React from 'react'
+import React from 'react';
 
 const T = React.PropTypes;
 
@@ -17,7 +17,7 @@ export default React.createClass({
             loadingText: 'Loading...',
             renderErrorMessage(failureMessage) {
                 const displayMessage = `Error occurred: ${failureMessage}`;
-                return <div>{displayMessage}</div>
+                return <div>{displayMessage}</div>;
             },
             createChildren() {
                 return null;
@@ -29,7 +29,7 @@ export default React.createClass({
         return {
             isLoading: true,
             failureMessage: null
-        }
+        };
     },
 
     componentDidMount() {
@@ -48,9 +48,9 @@ export default React.createClass({
                     this.setState({
                         isLoaded: true,
                         failureMessage: e
-                    })
+                    });
                 }
-            })
+            });
     },
 
     render() {
@@ -58,7 +58,7 @@ export default React.createClass({
             <div>
                 {this._renderContent()}
             </div>
-        )
+        );
     },
 
     _renderContent() {

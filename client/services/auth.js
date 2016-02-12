@@ -41,7 +41,7 @@ export default class AuthService {
             .then(response => {
                 this._sessionInfo = AuthService._createSessionFromResponse(response);
                 return this._sessionInfo;
-            })
+            });
     }
 
     tryAuthorize({accountName, token}) {
