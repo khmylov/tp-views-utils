@@ -19,16 +19,27 @@ export default React.createClass({
 
     getInitialState() {
         return {
+            accountName: defaultTestCredentials.accountName,
+            token: defaultTestCredentials.token,
+
             isSigningIn: false,
             errorMessage: null
         };
+    },
+
+    _onAccountNameChanged(e) {
+        this.setState({accountName: e.target.value});
+    },
+
+    _onTokenChanged(e) {
+        this.setState({token: e.target.value});
     },
 
     _onSubmit(e) {
         e.preventDefault();
         e.stopPropagation();
 
-        const {accountName, token} = this._getEnteredInfo();
+        const {accountName, token} = this.state;
         const {auth} = this.props;
 
         this.setState({isSigningIn: true, errorMessage: null});
@@ -54,16 +65,9 @@ export default React.createClass({
             });
     },
 
-    _getEnteredInfo() {
-        const {inputAccountName, inputPasswordToken} = this.refs;
-        return {
-            accountName: inputAccountName.value,
-            token: inputPasswordToken.value
-        };
-    },
-
     render() {
         const isBusy = this.state.isSigningIn;
+        const {accountName, token} = this.state;
 
         return (
             <div>
@@ -72,6 +76,8 @@ export default React.createClass({
                 <form className="signInPage__form" onSubmit={this._onSubmit}>
                     <h2 className="form-signin-heading">Please sign in</h2>
 
+
+
                     <div className="form-group">
                         <input
                             type="text"
@@ -79,7 +85,8 @@ export default React.createClass({
                             className="form-control"
                             placeholder="Your OnDemand account name"
                             required autofocus
-                            defaultValue={defaultTestCredentials.accountName}
+                            value={accountName}
+                            onChange={this._onAccountNameChanged}
                             disabled={isBusy}/>
                     </div>
 
@@ -90,8 +97,11 @@ export default React.createClass({
                             className="form-control"
                             placeholder="API token"
                             required
-                            defaultValue={defaultTestCredentials.token}
-                            disabled={isBusy}/>
+                            value={token}
+                            onChange={this._onTokenChanged}
+                            disabled={isBusy}
+                            aria-describedby="inputPasswordTokenHelp"/>
+                        {this._renderTokenTip()}
                     </div>
 
                     <button
@@ -118,6 +128,23 @@ export default React.createClass({
                 <br />
                 <span>{errorMessage}</span>
             </div>
+        );
+    },
+
+    _renderTokenTip() {
+        const accountName = Auth.tryParseAccountName(this.state.accountName);
+        const isAccountSpecified = Boolean(accountName && accountName.length);
+
+        const authApiRelativeUrl = '/api/v1/Authentication';
+        const tokenUrl = `https://${isAccountSpecified ? accountName : '<account_name>'}.tpondemand.com${authApiRelativeUrl}`;
+        const tokenUrlElement = isAccountSpecified ?
+            <a tabIndex="-1" href={tokenUrl}>{authApiRelativeUrl}</a> :
+            <span>{authApiRelativeUrl}</span>;
+
+        return (
+            <span id="inputPasswordTokenHelp" className="help-block">
+                You can get the token at {tokenUrlElement}
+            </span>
         );
     }
 });

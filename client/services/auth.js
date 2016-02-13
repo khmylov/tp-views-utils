@@ -40,7 +40,7 @@ export default class AuthService {
     }
 
     tryAuthorize({accountName, token}) {
-        const verifiedAccountName = AuthService._tryParseAccountName(accountName);
+        const verifiedAccountName = AuthService.tryParseAccountName(accountName);
         if (!verifiedAccountName) {
             return $.Deferred().reject('Account name should either be a simple string ("someaccount") or on-demand url ("https://someaccount.tpondemand.com"))');
         }
@@ -72,7 +72,11 @@ export default class AuthService {
         return new SessionInfo(loginResponse);
     }
 
-    static _tryParseAccountName(input) {
+    static tryParseAccountName(input) {
+        if (!input || !input.length) {
+            return null;
+        }
+
         const matched = input.match(/^(?:https?:\/\/)?(\w+)(?:\.tpondemand\.com)?$/);
         if (matched) {
             return matched[1];
