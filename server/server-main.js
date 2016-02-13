@@ -16,7 +16,7 @@ app.use(session({
 
 setupRoutes(app);
 
-const port = 3000;
+const port = process.env.PORT || 3000;
 const server = app.listen(port, () => {
-    console.log(`listening on *:${port}`);
+    console.log(`Listening on *:${port}. NODE_ENV: ${process.env.NODE_ENV}.`);
 });

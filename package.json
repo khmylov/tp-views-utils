@@ -1,36 +1,39 @@
 {
   "name": "tp-views-utils",
+  "engines": {
+    "node": "5.5.0"
+  },
+  "scripts": {
+    "postinstall": "node config/build.js",
+    "build": "node config/build",
+    "start": "node config/run-dev.js"
+  },
   "dependencies": {
+    "babel-core": "^6.5.2",
+    "babel-loader": "^6.2.2",
+    "babel-preset-es2015": "^6.5.0",
+    "babel-preset-react": "^6.5.0",
     "body-parser": "^1.14.2",
+    "bootstrap-loader": "^1.0.8",
     "bootstrap-sass": "^3.3.6",
     "classnames": "^2.2.3",
+    "css-loader": "^0.23.1",
+    "deep-merge": "^1.0.0",
+    "expose-loader": "^0.7.1",
     "express": "^4.13.4",
     "express-session": "^1.13.0",
+    "file-loader": "^0.8.5",
     "immutable": "^3.7.6",
+    "imports-loader": "^0.6.5",
     "jquery": "^2.2.0",
+    "json-loader": "^0.5.4",
     "lodash": "^4.2.1",
+    "node-sass": "^3.4.2",
+    "progress-bar-webpack-plugin": "^1.3.0",
     "react": "^0.14.7",
     "react-dom": "^0.14.7",
     "react-router": "^2.0.0",
-    "request-promise": "^2.0.0"
-  },
-  "devDependencies": {
-    "babel-core": "^6.4.5",
-    "babel-loader": "^6.2.2",
-    "babel-preset-es2015": "^6.3.13",
-    "babel-preset-react": "^6.3.13",
-    "bootstrap-loader": "^1.0.8",
-    "css-loader": "^0.23.1",
-    "deep-merge": "^1.0.0",
-    "eslint": "^1.10.3",
-    "eslint-plugin-react": "^3.16.1",
-    "expose-loader": "^0.7.1",
-    "file-loader": "^0.8.5",
-    "gulp": "^3.9.0",
-    "imports-loader": "^0.6.5",
-    "json-loader": "^0.5.4",
-    "node-sass": "^3.4.2",
-    "nodemon": "^1.8.1",
+    "request-promise": "^2.0.0",
     "resolve-url-loader": "^1.4.3",
     "sass-loader": "^3.1.2",
     "source-map-support": "^0.4.0",
@@ -38,7 +41,9 @@
     "url-loader": "^0.5.7",
     "webpack": "^1.12.13"
   },
-  "scripts": {
-    "start": "webpack && node build/backend.js"
+  "devDependencies": {
+    "eslint": "^1.10.3",
+    "eslint-plugin-react": "^3.16.1",
+    "nodemon": "^1.8.1"
   }
 }

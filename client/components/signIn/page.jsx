@@ -76,8 +76,6 @@ export default React.createClass({
                 <form className="signInPage__form" onSubmit={this._onSubmit}>
                     <h2 className="form-signin-heading">Please sign in</h2>
 
-
-
                     <div className="form-group">
                         <input
                             type="text"
