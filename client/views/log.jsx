@@ -1,4 +1,3 @@
-import React from 'react';
 const T = React.PropTypes;
 
 export default React.createClass({

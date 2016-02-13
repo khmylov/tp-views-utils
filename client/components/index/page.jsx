@@ -1,6 +1,5 @@
-import React from 'react';
 import {Link} from 'react-router';
-import routes from '../../routes';
+import {routes} from 'client/configuration/routing.jsx';
 
 export default React.createClass({
     displayName: 'index',

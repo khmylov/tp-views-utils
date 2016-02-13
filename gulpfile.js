@@ -75,7 +75,12 @@ var frontendConfig = config({
                 loader: 'style!css'
             }
         ]
-    }
+    },
+    plugins: [
+        new webpack.ProvidePlugin({
+            React: 'react'
+        })
+    ]
 });
 
 // backend

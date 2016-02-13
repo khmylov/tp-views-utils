@@ -1,4 +1,3 @@
-import React from 'react';
 import Auth from '../../services/auth';
 import errorPrinter from '../../utils/errorPrinter';
 import './signIn.css';

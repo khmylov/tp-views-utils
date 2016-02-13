@@ -1,16 +1,22 @@
-import React from 'react';
+/* eslint no-console:0 */
+
 import {Link} from 'react-router';
 import LogView from 'client/views/log.jsx';
 import Log from '../../models/log';
 import errorPrinter from 'client/utils/errorPrinter';
+import {routes} from 'client/configuration/routing.jsx';
 
 const T = React.PropTypes;
 
 export default React.createClass({
     displayName: 'copyCardSettingsUpdateProgress',
 
+    contextTypes: {
+        router: T.object.isRequired
+    },
+
     propTypes: {
-        startOperation: T.func.isRequired
+        location: T.object.isRequired
     },
 
     getInitialState() {
@@ -25,7 +31,15 @@ export default React.createClass({
     },
 
     componentDidMount() {
-        this.props.startOperation(this._log)
+        const {router} = this.context;
+        const {startOperation} = this.props.location.state;
+        if (!startOperation) {
+            console.warn('router.location.state.startOperation not specified for copySettingsProgress page, redirecting to configuration page');
+            router.replace(routes.copyCardSettings);
+            return;
+        }
+
+        startOperation(this._log)
             .done(() => {
                 if (this.isMounted()) {
                     this.setState({isCompleted: true, error: null});
@@ -75,7 +89,7 @@ export default React.createClass({
                 <span>All done! You can go back to the </span>
                 <Link to="/">home page</Link>
                 <span> or start a </span>
-                <Link to="/">new session</Link>
+                <Link to={routes.copyCardSettings}>new session</Link>
             </div>
         );
     }

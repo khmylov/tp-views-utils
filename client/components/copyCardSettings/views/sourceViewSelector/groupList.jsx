@@ -1,4 +1,3 @@
-import React from 'react';
 import Immutable from 'immutable';
 import _ from 'lodash';
 import ViewList from './viewList.jsx';

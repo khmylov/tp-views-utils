@@ -1,7 +1,6 @@
-import React from 'react';
 import {Link} from 'react-router';
 import Index from './components/index/page.jsx';
-import routes from './routes';
+import {routes} from 'client/configuration/routing.jsx';
 import Auth from './services/auth';
 
 export default React.createClass({
