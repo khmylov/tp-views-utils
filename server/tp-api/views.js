@@ -6,7 +6,6 @@ class TpViewsApi {
     }
 
     getAllViews({select} = {}) {
-        console.log('~select:', select);
         const qs = {};
         if (select) {
             qs.select = select;
