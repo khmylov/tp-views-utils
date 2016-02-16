@@ -55,12 +55,17 @@ const Validation = {
         },
 
         'accessRights'(sourceViewData, targetViewData, validationContext) {
+            const {userId, isAdministrator} = validationContext.sessionInfo;
+
+            if (isAdministrator) {
+                return validationOk;
+            }
+
             const {ownerIds} = targetViewData;
             if (!_.isArray(ownerIds)) {
                 return validationError('You don\'t have required permissions to change settings for this view (no ownerIds on target)');
             }
 
-            const {userId} = validationContext.sessionInfo;
             if (!_.includes(ownerIds, userId)) {
                 return validationError('You must be one of the owners of this view to change its settings');
             }

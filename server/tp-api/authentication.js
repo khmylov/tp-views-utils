@@ -9,7 +9,7 @@ export default class TpAuthenticationApi {
         return rp(this._target.createRequestOptions('/api/v1/Users/loggedUser', {
             qs: {
                 format: 'json',
-                include: '[firstName,lastName,login]'
+                include: '[firstName,lastName,login,isAdministrator]'
             }
         }));
     }

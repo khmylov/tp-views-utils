@@ -58,7 +58,8 @@ function tryAuthenticate(req, res, target) {
                 firstName: authenticatedUserInfo.FirstName,
                 lastName: authenticatedUserInfo.LastName,
                 login: authenticatedUserInfo.Login,
-                userId: authenticatedUserInfo.Id
+                userId: authenticatedUserInfo.Id,
+                isAdministrator: authenticatedUserInfo.IsAdministrator
             }));
         })
         .catch(e => {
