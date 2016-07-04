@@ -12,7 +12,8 @@ export default React.createClass({
         viewData: T.object.isRequired,
         validationState: T.shape({
             success: T.bool.isRequired,
-            message: T.string
+            error: T.string,
+            warning: T.string
         }).isRequired,
         isSelected: T.bool.isRequired,
         onChange: T.func.isRequired
@@ -22,20 +23,22 @@ export default React.createClass({
         this.props.onChange(this.props.viewId, isChecked);
     },
     _getStatusText({success, error, warning}) {
-        if (success) {
-            return 'OK';
+        if (!success) {
+            return error;
         }
 
-        return error || warning;
+        return warning || 'OK';
     },
     render() {
         const {isSelected, validationState, name, viewData} = this.props;
 
-        const isChecked = isSelected && validationState.success;
-        const disabled = !Boolean(validationState.success);
+        const canSelect = Boolean(validationState.success);
+        const hasWarnings = Boolean(validationState.warning);
+        const disabled = !canSelect;
 
         const rowClassName = classNames({
-            'success': isChecked,
+            'success': canSelect && !hasWarnings && isSelected,
+            'warning': canSelect && hasWarnings && isSelected,
             'copyCardSettings__target-list__target--disabled': disabled
         });
 
@@ -51,7 +54,7 @@ export default React.createClass({
                         <label>
                             <input
                                 type="checkbox"
-                                checked={isChecked}
+                                checked={isSelected && !disabled}
                                 disabled={disabled}
                                 onChange={this._onChange}/>
                             {name}

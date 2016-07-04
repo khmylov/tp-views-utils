@@ -4,12 +4,41 @@ const validationOk = Object.freeze({success: true});
 const validationError = message => ({success: false, error: message});
 const validationWarning = message => ({success: true, warning: message});
 
-function getCellTypes({cells}) {
-    return _.orderBy(cells ? cells.types || [] : [], _.identity);
-}
+const getSpaceTypes = definition =>
+    _.orderBy(definition ? definition.types || [] : [], _.identity);
+
+const getCellTypes = ({cells}) => getSpaceTypes(cells);
+const getXTypes = ({x}) => getSpaceTypes(x);
+const getYTypes = ({y}) => getSpaceTypes(y);
+
+const getTypesText = types => types.length ? types.join(', ') : '<Nothing>';
+
+const ITEM_TYPE_BOARD = 'board';
 
 const Validation = {
     _validationRules: {
+        'viewTypeAndMode'(sourceViewData, targetViewData) {
+            const sourceItemType = sourceViewData.itemType;
+
+            if (sourceItemType !== ITEM_TYPE_BOARD) {
+                return validationError(`Source view type should be '${ITEM_TYPE_BOARD}'. Actual view type: '${sourceItemType}'`);
+            }
+
+            const targetItemType = targetViewData.itemType;
+            if (targetItemType !== sourceItemType) {
+                return validationError(`Source and target item type should match. Source: '${sourceItemType}'. Target: '${targetItemType}'`);
+            }
+
+            const sourceViewMode = sourceViewData.viewMode;
+            const targetViewMode = targetViewData.viewMode;
+
+            if (sourceViewMode !== targetViewMode) {
+                return validationError(`Source and target have different view modes: ${sourceViewMode} and ${targetViewMode}.`);
+            }
+
+            return validationOk;
+        },
+
         'cellTypes'(sourceViewData, targetViewData) {
             const sourceCellTypes = getCellTypes(sourceViewData);
             const targetCellTypes = getCellTypes(targetViewData);
@@ -26,29 +55,22 @@ const Validation = {
                 return validationOk;
             }
 
-            return validationError(`Views have different cell types. Source: '${sourceCellTypes.join(', ')}'. Target: '${targetCellTypes.join(', ')}'`);
+            return validationError(`Views have different cell types. Source: '${getTypesText(sourceCellTypes)}'. Target: '${getTypesText(targetCellTypes)}'`);
         },
 
-        'viewTypeAndMode'(sourceViewData, targetViewData) {
-            const sourceItemType = sourceViewData.itemType;
+        'axesForLists'(sourceViewData, targetViewData) {
+            const sourceXTypes = getXTypes(sourceViewData);
+            const targetXTypes = getXTypes(targetViewData);
 
-            if (sourceItemType !== 'board') {
-                return validationError(`Source view type should be 'board'. Actual view type: '${sourceItemType}'`);
+            if (!_.isEqual(sourceXTypes, targetXTypes)) {
+                return validationWarning(`Source and target view have different X axes: ${getTypesText(sourceXTypes)} and ${getTypesText(targetXTypes)}. Proceed with caution, you may break things!`);
             }
 
-            const sourceViewMode = sourceViewData.viewMode;
-            if (sourceViewMode !== '' && sourceViewMode !== 'board') {
-                return validationError(`Source view mode should be 'board'. Actual view mode: '${sourceViewMode}'`);
-            }
+            const sourceYTypes = getYTypes(sourceViewData);
+            const targetYTypes = getYTypes(targetViewData);
 
-            const targetItemType = targetViewData.itemType;
-            if (targetItemType !== sourceItemType) {
-                return validationError(`Source and target item type should match. Source: '${sourceItemType}'. Target: '${targetItemType}'`);
-            }
-
-            const targetViewMode = targetViewData.viewMode;
-            if (sourceViewMode !== targetViewMode) {
-                return validationError(`Source and target view mode should match. Source: '${sourceViewMode}. Target: '${targetViewMode}'`);
+            if (!_.isEqual(sourceYTypes, targetYTypes)) {
+                return validationWarning(`Source and target view have different Y axes: ${getTypesText(sourceXTypes)} ${getTypesText(targetXTypes)}. Proceed with caution, you may break things!`);
             }
 
             return validationOk;
@@ -75,13 +97,23 @@ const Validation = {
     },
 
     validateViewForCopySettings(sourceViewData, targetViewData, validationContext) {
-        const brokenRule = _
-            .chain(Validation._validationRules)
-            .map(rule => rule(sourceViewData, targetViewData, validationContext))
-            .find(validationResult => !validationResult.success)
-            .value();
+        const ruleResults = _.map(
+            Validation._validationRules,
+            rule => rule(sourceViewData, targetViewData, validationContext));
 
-        return brokenRule || validationOk;
+        const errorRules = _.filter(ruleResults, result => !result.success);
+        if (errorRules.length) {
+            const aggregatedErrorMessage = _.map(errorRules, x => x.error).join('\n');
+            return validationError(aggregatedErrorMessage);
+        }
+
+        const warningRules = _.filter(ruleResults, result => result.warning);
+        if (warningRules.length) {
+            const aggregatedWarningMessage = _.map(warningRules, x => x.warning).join('\n');
+            return validationWarning(aggregatedWarningMessage);
+        }
+
+        return validationOk;
     },
 
     validateSourceView(sourceViewData, validationContext) {

@@ -1,4 +1,4 @@
-import Immutable from 'immutable';
+import * as Immutable from 'immutable';
 import SelectableView from './selectableView.jsx';
 
 const T = React.PropTypes;
