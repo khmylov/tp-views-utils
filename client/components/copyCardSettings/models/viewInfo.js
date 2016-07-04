@@ -17,6 +17,8 @@ export default {
                     case 'newlist':
                         return 'List';
                 }
+                
+                break;
             case 'dashboard':
                 return 'Dashboard';
             case 'customreport':
@@ -24,5 +26,28 @@ export default {
         }
 
         return `<Unknown '${itemType}-${viewMode}'>`;
+    },
+    
+    formatViewTypeShort(itemType, viewMode) {
+        switch (itemType) {
+            case 'board':
+                switch (viewMode) {
+                    case 'board':
+                        return 'B';
+                    case 'list':
+                        return 'O';
+                    case 'timeline':
+                        return 'T';
+                    case 'newlist':
+                        return 'L';
+                }
+                break;
+            case 'dashboard':
+                return 'D';
+            case 'customreport':
+                return 'R';
+        }
+
+        return '?';
     }
-}
+};

@@ -18,6 +18,14 @@ class ViewModel {
         return this._itemData.name;
     }
 
+    get itemType() {
+        return this._itemData.itemType;
+    }
+
+    get viewMode() {
+        return this._itemData.viewMode;
+    }
+
     getViewData() {
         // TODO: use immutable data here to avoid cloning?
         return _.cloneDeep(this._itemData);

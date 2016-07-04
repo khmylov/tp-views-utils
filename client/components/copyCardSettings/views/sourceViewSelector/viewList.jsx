@@ -23,6 +23,8 @@ export default React.createClass({
                 key={v.key}
                 viewId={v.key}
                 name={v.name}
+                itemType={v.itemType}
+                viewMode={v.viewMode}
                 isCurrent={v.key === currentViewId}
                 setViewAsCurrent={setViewAsCurrent} />
         );
