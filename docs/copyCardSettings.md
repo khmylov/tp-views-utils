@@ -35,5 +35,6 @@ User can copy settings from Source to Target only when:
 
   - User has access rights to edit the Target view
   - Source and Target have the same type AND view mode (for example, it's not possible to copy settings from board to timeline)
-  - Source is view of type board
-  - Source and Target have the same set of cards
+  - Both source and Target have the same set of card types selected
+  - Boards, timelines, and one-by-one views can have any X and Y axes configurations because their "cards" can't be customized yet
+  - The lists can have different X and Y axes selected, but the user should be warned about that
