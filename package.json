@@ -6,6 +6,7 @@
   "scripts": {
     "postinstall": "node config/build.js",
     "build": "node config/build",
+    "build-prod": "rm -r build && NODE_ENV=production npm install",
     "start": "node config/run-dev.js"
   },
   "dependencies": {
