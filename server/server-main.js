@@ -2,6 +2,7 @@ import express from 'express';
 import bodyParser from 'body-parser';
 import setupRoutes from './routes';
 import path from 'path';
+import {nconf} from './configuration';
 
 import session from 'express-session';
 
@@ -11,12 +12,13 @@ app.use(bodyParser.urlencoded({extended: false}));
 app.use(bodyParser.json());
 
 app.use(session({
-    secret: process.env.SESSION_SECRET || 'tp-views-utils-default-session-secret'
+    secret: nconf.get('SESSION_SECRET')
 }));
 
 setupRoutes(app);
 
-const port = process.env.PORT || 3000;
+const port = nconf.get('PORT');
+const nodeEnv = nconf.get('NODE_ENV');
 const server = app.listen(port, () => {
-    console.log(`Listening on *:${port}. NODE_ENV: ${process.env.NODE_ENV}.`);
+    console.log(`Listening on *:${port}. NODE_ENV: ${nodeEnv}.`);
 });

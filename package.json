@@ -1,7 +1,7 @@
 {
   "name": "tp-views-utils",
   "engines": {
-    "node": "5.5.0"
+    "node": "6.3.1"
   },
   "scripts": {
     "postinstall": "node config/build.js",
@@ -29,6 +29,7 @@
     "jquery": "^2.2.0",
     "json-loader": "^0.5.4",
     "lodash": "^4.2.1",
+    "nconf": "^0.8.4",
     "node-sass": "^3.4.2",
     "progress-bar-webpack-plugin": "^1.3.0",
     "react": "^0.14.7",
