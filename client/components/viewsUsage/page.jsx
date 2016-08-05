@@ -10,7 +10,7 @@ export const ViewsUsagePage = React.createClass({
     },
 
     _loadData() {
-        return this._model.loadAllViewUsages();
+        return this._model.loadAllViewUsages().then(x => x, err => err.statusText);
     },
 
     render() {

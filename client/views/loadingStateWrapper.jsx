@@ -67,7 +67,7 @@ export default React.createClass({
             return <div>{loadingText}</div>;
         }
 
-        if (failureMessage && failureMessage.length) {
+        if (failureMessage) {
             return renderErrorMessage(failureMessage);
         }
 
