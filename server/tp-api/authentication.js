@@ -5,6 +5,9 @@ export default class TpAuthenticationApi {
         this._target = target;
     }
 
+    /**
+     * @returns {Promise}
+     */
     tryAuthenticate() {
         return rp(this._target.createRequestOptions('/api/v1/Users/loggedUser', {
             qs: {
