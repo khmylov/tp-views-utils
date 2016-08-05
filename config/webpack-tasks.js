@@ -1,13 +1,10 @@
 /* eslint no-console: 0 */
 
-const _ = require('lodash');
 const webpack = require('webpack');
-const webpackConfigs = require('./webpack-configs');
-const backendConfig = webpackConfigs.backendConfig;
-const frontendConfig = webpackConfigs.frontendConfig;
+const {backendConfig, frontendConfig} = require('./webpack-configs');
 
-function log() {
-    console.log.apply(console, ['~webpack:'].concat(_.toArray(arguments)));
+function log(...args) {
+    console.log.apply(console, ['~webpack:'].concat(...args));
 }
 
 function handleWebpackResults(err) {
@@ -19,6 +16,8 @@ function handleWebpackResults(err) {
 }
 
 module.exports = {
+    log,
+
     build(callback) {
         webpack([backendConfig, frontendConfig]).run((err, stats) => {
             handleWebpackResults(err, stats);
@@ -28,29 +27,36 @@ module.exports = {
         });
     },
 
-    watch(completedCallback, restartCallback) {
+    watch(completedCallback) {
         var frontendWatcherStarted = false;
         var completedCalled = false;
 
-        const backendCompiler = webpack(backendConfig);
-        backendCompiler.watch({}, (err, stats) => {
-            log('Backend callback');
+        const watcherOptions = {
+            aggregateTimeout: 300,
+            poll: true
+        };
+
+        function frontendWatcherCallback(err, stats) {
+            log('Frontend watcher callback');
+            handleWebpackResults(err, stats);
+
+            if (!completedCalled) {
+                completedCalled = true;
+                completedCallback();
+            }
+        }
+
+        function backendWatcherCallback(err, stats) {
+            log('Backend watcher callback');
             if (!frontendWatcherStarted) {
                 log('Starting frontend watch');
                 frontendWatcherStarted = true;
-                webpack(frontendConfig).watch({}, (err, stats) => {
-                    log('Frontend callback');
-                    handleWebpackResults(err, stats);
-
-                    if (!completedCalled) {
-                        completedCalled = true;
-                        completedCallback();
-                    }
-                });
+                webpack(frontendConfig).watch(watcherOptions, frontendWatcherCallback);
             }
 
             handleWebpackResults(err, stats);
-            restartCallback();
-        });
+        }
+
+        webpack(backendConfig).watch(watcherOptions, backendWatcherCallback);
     }
 };

@@ -1,5 +1,6 @@
 {
   "name": "tp-views-utils",
+  "private": true,
   "engines": {
     "node": "6.3.1"
   },
@@ -8,9 +9,9 @@
     "start": "node config/run-dev.js"
   },
   "dependencies": {
-    "babel-core": "^6.11.4",
+    "babel-core": "^6.13.1",
     "babel-loader": "^6.2.4",
-    "babel-preset-es2015": "^6.9.0",
+    "babel-preset-es2015": "^6.13.1",
     "babel-preset-react": "^6.11.1",
     "body-parser": "^1.15.2",
     "bootstrap-loader": "^1.1.0",
@@ -22,30 +23,30 @@
     "expose-loader": "^0.7.1",
     "express": "^4.14.0",
     "express-session": "^1.14.0",
-    "file-loader": "^0.8.5",
+    "file-loader": "^0.9.0",
     "immutable": "^3.8.1",
     "imports-loader": "^0.6.5",
-    "jquery": "^2.2.4",
+    "jquery": "^3.1.0",
     "json-loader": "^0.5.4",
     "lodash": "^4.14.1",
     "nconf": "^0.8.4",
     "node-sass": "^3.8.0",
     "nodemon": "^1.10.0",
     "progress-bar-webpack-plugin": "^1.9.0",
-    "react": "^0.14.8",
-    "react-dom": "^0.14.8",
+    "react": "^15.3.0",
+    "react-dom": "^15.3.0",
     "react-router": "^2.6.1",
-    "request-promise": "^2.0.1",
+    "request-promise": "^4.1.0",
     "resolve-url-loader": "^1.6.0",
-    "sass-loader": "^3.2.3",
+    "sass-loader": "^4.0.0",
     "source-map-support": "^0.4.2",
     "style-loader": "^0.13.1",
     "url-loader": "^0.5.7",
     "webpack": "^1.13.1"
   },
   "devDependencies": {
-    "eslint": "^1.10.3",
-    "eslint-plugin-react": "^3.16.1",
-    "nodemon": "^1.8.1"
+    "eslint": "^3.2.2",
+    "eslint-plugin-react": "^6.0.0",
+    "nodemon": "^1.10.0"
   }
 }

@@ -82,7 +82,8 @@ export default React.createClass({
                             ref="inputAccountName"
                             className="form-control"
                             placeholder="Your OnDemand account name"
-                            required autofocus
+                            required={true}
+                            autoFocus={true}
                             value={accountName}
                             onChange={this._onAccountNameChanged}
                             disabled={isBusy}/>
@@ -94,7 +95,7 @@ export default React.createClass({
                             ref="inputPasswordToken"
                             className="form-control"
                             placeholder="API token"
-                            required
+                            required={true}
                             value={token}
                             onChange={this._onTokenChanged}
                             disabled={isBusy}
