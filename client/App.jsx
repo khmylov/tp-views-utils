@@ -82,4 +82,4 @@ export default React.createClass({
             </p>
         );
     }
-})
+});

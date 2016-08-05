@@ -149,4 +149,4 @@ export default app => {
 
         res.end(HTML);
     });
-}
+};

@@ -21,6 +21,8 @@ setupRoutes(app);
 
 const port = nconf.get('PORT');
 const nodeEnv = nconf.get('NODE_ENV');
-const server = app.listen(port, () => {
+
+app.listen(port, () => {
+    /* eslint no-console: 0 */
     console.log(`Listening on *:${port}. NODE_ENV: ${nodeEnv}.`);
 });

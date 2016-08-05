@@ -83,4 +83,4 @@ export default React.createClass({
                 sessionInfo={this.props.auth.getSessionInfo()}/>
         );
     }
-})
+});

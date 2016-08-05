@@ -20,4 +20,4 @@ export default class SessionInfo {
         defineProp(this, 'userId', guard.notNull(userId, 'userId'));
         defineProp(this, 'isAdministrator', isAdministrator || false);
     }
-};
+}

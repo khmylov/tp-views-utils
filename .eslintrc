@@ -1,18 +1,28 @@
 {
+    "parserOptions": {
+        "ecmaVersion": 6,
+        "sourceType": "module",
+        "ecmaFeatures": {
+            "jsx": true
+        }
+    },
     "rules": {
         "indent": [
-            2,
+            "error",
             4,
             {"SwitchCase": 1}
         ],
         "quotes": [
-            2,
-            "single"
+            "error",
+            "single",
+            {"avoidEscape": true, "allowTemplateLiterals": true}
         ],
         "semi": [
-            2,
+            "error",
             "always"
-        ]
+        ],
+        "react/jsx-uses-react": "error",
+        "react/jsx-uses-vars": "error"
     },
     "globals": {
         "React": false
@@ -23,11 +33,6 @@
         "browser": true
     },
     "extends": "eslint:recommended",
-    "ecmaFeatures": {
-        "jsx": true,
-        "experimentalObjectRestSpread": true,
-        "modules": true
-    },
     "plugins": [
         "react"
     ]
