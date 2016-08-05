@@ -1,4 +1,5 @@
 import express from 'express';
+import compression from 'compression';
 import bodyParser from 'body-parser';
 import setupRoutes from './routes';
 import path from 'path';
@@ -8,6 +9,7 @@ import session from 'express-session';
 
 const app = express();
 app.use('/static', express.static(path.join(__dirname, '../build/static')));
+app.use(compression());
 app.use(bodyParser.urlencoded({extended: false}));
 app.use(bodyParser.json());
 
