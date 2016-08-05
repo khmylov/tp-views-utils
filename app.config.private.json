@@ -1,0 +1,10 @@
+{
+  "taus": {
+    "connectionString": "postgres://user:password@host:port/dbname"
+  },
+  "targetprocess": {
+    "account": "example",
+    "token": "sometokenhere"
+  },
+  "PORT": 3000
+}

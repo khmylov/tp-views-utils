@@ -3,7 +3,10 @@ export const nconf = nconfImport;
 
 nconf
     .env(['NODE_ENV', 'PORT', 'SESSION_SECRET'])
-    .file({
+    .file('user', {
+        file: 'app.config.private.json'
+    })
+    .file('global', {
         file: 'app.config.json'
     })
     .defaults({
