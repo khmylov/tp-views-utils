@@ -1,5 +1,6 @@
 import {ViewItemUsageInfo} from '../models/viewsUsageModel';
 import Immutable from 'immutable';
+import moment from 'moment';
 
 const ViewUsageItemView = React.createClass({
     displayName: 'viewUsageItem',
@@ -10,11 +11,12 @@ const ViewUsageItemView = React.createClass({
         const {usageInfo} = this.props;
         const {viewName, groupName, usageCount, lastUsageDate, viewId} = usageInfo;
         const displayName = groupName && groupName.length ? `${viewName} (in '${groupName}')` : viewName;
+        const displayDate = lastUsageDate ? moment(lastUsageDate).fromNow() : 'Not used';
         return (
             <tr>
                 <td>{displayName}</td>
                 <td>{usageCount}</td>
-                <td>{lastUsageDate}</td>
+                <td title={lastUsageDate}>{displayDate}</td>
                 <td>{viewId}</td>
             </tr>
         );
