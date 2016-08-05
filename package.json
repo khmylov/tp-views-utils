@@ -42,7 +42,8 @@
     "source-map-support": "^0.4.2",
     "style-loader": "^0.13.1",
     "url-loader": "^0.5.7",
-    "webpack": "^1.13.1"
+    "webpack": "^1.13.1",
+    "winston": "^2.2.0"
   },
   "devDependencies": {
     "eslint": "^3.2.2",

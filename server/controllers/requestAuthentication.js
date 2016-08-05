@@ -1,6 +1,7 @@
 import * as _ from 'lodash';
 import TpAuthenticationApi from '../tp-api/authentication';
 import TpTarget from '../tp-api/target';
+import {logger} from '../logging';
 
 export function buildTargetFromSession({tokenValue, accountName}) {
     if (!accountName || !accountName.length || !tokenValue || !tokenValue.length) {
@@ -22,8 +23,7 @@ export function getTargetFromSessionOrEnd(req, res) {
 }
 
 export function clearAuthSession(session) {
-    /* eslint no-console: 0 */
-    console.log('Clearing out session');
+    logger.info('Clearing out session');
 
     session.tokenType = null;
     session.tokenValue = null;

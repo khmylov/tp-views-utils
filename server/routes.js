@@ -1,13 +1,10 @@
-/* eslint no-console: 0 */
-
-
 import TpTarget from './tp-api/target';
+import {logger} from './logging';
 import {
     buildTargetFromSession,
     clearAuthSession,
     tryAuthenticate
 } from './controllers/requestAuthentication';
-
 import * as viewsApiController from './controllers/viewsApiController';
 
 // TODO: brush up error handling and responses
@@ -21,7 +18,7 @@ export default app => {
         const {accountName, token} = req.body;
 
         if (!accountName || !accountName.length || !token || !token.length) {
-            console.log('Invalid request arguments', req.body);
+            logger.error('Invalid request arguments', req.body);
             res.sendStatus(500);
             return;
         }
@@ -29,7 +26,7 @@ export default app => {
         const target = new TpTarget({accountName: accountName, token: token});
         tryAuthenticate(req, res, target)
             .catch(e => {
-                console.error(req.url, 'POST /login failed', e);
+                logger.error('POST /login failed', {error: e, url: req.url});
             });
     });
 

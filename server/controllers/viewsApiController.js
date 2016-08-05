@@ -2,6 +2,7 @@ import TpViewsApi from '../tp-api/views';
 import {
     getTargetFromSessionOrEnd
 } from './requestAuthentication';
+import {logger} from '../logging';
 
 export function initialize(app) {
 
@@ -18,7 +19,7 @@ export function initialize(app) {
                 res.end(r);
             })
             .catch(e => {
-                console.error(req.url, 'getAllViews() failed', e);
+                logger.error('getAllViews() failed', e);
                 res.sendStatus(500);
             });
     });
@@ -37,7 +38,7 @@ export function initialize(app) {
                 res.end(JSON.stringify(r));
             })
             .catch(e => {
-                console.error(req.url, 'createOrUpdateView() failed', e);
+                logger.error('createOrUpdateView() failed', {error: e, url: req.url});
                 res.sendStatus(500);
             });
     });

@@ -1,4 +1,5 @@
-var nconf = require('nconf');
+import nconfImport from 'nconf';
+export const nconf = nconfImport;
 
 nconf
     .env(['NODE_ENV', 'PORT', 'SESSION_SECRET'])
@@ -10,6 +11,4 @@ nconf
         SESSION_SECRET: 'tp-views-utils-default-session-secret'
     });
 
-module.exports = {
-    nconf
-};
+export const isProduction = nconf.get('NODE_ENV') === 'production';
