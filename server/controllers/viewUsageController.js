@@ -47,9 +47,6 @@ function endAsync(client) {
 
 function doWithPg(func) {
     const connectionString = nconf.get('taus:connectionString');
-
-    logger.debug('clientConfig', connectionString);
-
     const client = new pg.Client(connectionString);
 
     return connectAsync(client)
@@ -69,7 +66,6 @@ SELECT * FROM (
     GROUP BY view_id
     ORDER BY view_count DESC
 )
-LIMIT 100
 `;
         return queryAsync(client, query, [host]);
     })
@@ -84,7 +80,7 @@ function getViews({target}) {
     const api = new TpViewsApi(target);
     return api
         .getAllViews({
-            select: '{key,name,itemType,viewMode}'
+            select: '{key,name,itemType,viewMode,menuGroupKey}'
         })
         .then(response => JSON.parse(response))
         .then(response => {
@@ -105,8 +101,9 @@ function getViews({target}) {
 
             const views = _
                 .chain(groups)
-                .flatMap(group => group.children)
-                .map(item => item.itemData)
+                .flatMap(group => _.map(group.children, item => _.extend({}, item.itemData, {
+                    groupName: group.itemData.name
+                })))
                 .value();
 
             //console.log('~~~~~~~ views', views);
@@ -141,7 +138,7 @@ export function initialize(app) {
         Promise.all([getViewsUsage({host: target.hostName}), getViews({target})])
             .then(([viewsUsage, views]) => buildUsageInfo(viewsUsage, views))
             .then(usageInfo => {
-                res.end(JSON.stringify(usageInfo));
+                res.end(JSON.stringify({items: usageInfo}));
             })
             .catch(err => {
                 logger.error('res.end');

@@ -5,12 +5,15 @@ import {Router, Route, browserHistory} from 'react-router';
 import App from 'client/App.jsx';
 import CopyCardSettingsPage from 'client/components/copyCardSettings/page.jsx';
 import CopyCardSettingsProgressPage from 'client/components/copyCardSettings/views/operationStatus/updateProgress.jsx';
+import {ViewsUsagePage} from 'client/components/viewsUsage/page.jsx';
+
 import SignInPage from 'client/components/signIn/page.jsx';
 
 export const routes = {
     copyCardSettings: '/actions/copyCardSettings',
     copyCardSettingsResults: '/actions/copyCardSettings/progress',
-    login: '/login'
+    login: '/login',
+    viewsUsage: '/actions/viewsUsage'
 };
 
 /* eslint no-console: 0 */
@@ -46,6 +49,7 @@ export function createRouter({auth}) {
                 <Route path={routes.login} component={SignInPage} />
                 <Route path={routes.copyCardSettings} component={CopyCardSettingsPage} />
                 <Route path={routes.copyCardSettingsResults} component={CopyCardSettingsProgressPage} />
+                <Route path={routes.viewsUsage} component={ViewsUsagePage} />
             </Route>
         </Router>
     );

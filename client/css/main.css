@@ -10,3 +10,6 @@ body {
 .rootElement__loading-placeholder {
   text-align: center;
 }
+.main-page__navigation-panel > a.btn {
+  margin-right: 10px;
+}

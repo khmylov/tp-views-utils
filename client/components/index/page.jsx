@@ -40,19 +40,19 @@ export default React.createClass({
         }
 
         return (
-            <p>
+            <p className="main-page__navigation-panel">
                 <Link
                     className="btn btn-primary"
                     to={routes.copyCardSettings}
                     role="button">
                     Copy card settings between views
                 </Link>
-                <a
+                <Link
                     className="btn btn-primary"
-                    href="/api/views/usage"
+                    to={routes.viewsUsage}
                     role="button">
                     Views usage
-                </a>
+                </Link>
             </p>
         );
     }
