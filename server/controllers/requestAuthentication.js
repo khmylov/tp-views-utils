@@ -3,6 +3,11 @@ import TpAuthenticationApi from '../tp-api/authentication';
 import TpTarget from '../tp-api/target';
 import {logger} from '../logging';
 
+/**
+ * @param {String} tokenValue
+ * @param {String} accountName
+ * @returns {TpTarget|null}
+ */
 export function buildTargetFromSession({tokenValue, accountName}) {
     if (!accountName || !accountName.length || !tokenValue || !tokenValue.length) {
         return null;
@@ -11,12 +16,17 @@ export function buildTargetFromSession({tokenValue, accountName}) {
     return new TpTarget({accountName: accountName, token: tokenValue});
 }
 
+/**
+ * @param req
+ * @param res
+ * @returns {TpTarget|null}
+ */
 export function getTargetFromSessionOrEnd(req, res) {
     const target = buildTargetFromSession(req.session);
     if (!target) {
         clearAuthSession(req.session);
         res.sendStatus(401);
-        return;
+        return null;
     }
 
     return target;

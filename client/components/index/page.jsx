@@ -47,6 +47,12 @@ export default React.createClass({
                     role="button">
                     Copy card settings between views
                 </Link>
+                <a
+                    className="btn btn-primary"
+                    href="/api/views/usage"
+                    role="button">
+                    Views usage
+                </a>
             </p>
         );
     }

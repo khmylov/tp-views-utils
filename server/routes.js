@@ -6,6 +6,7 @@ import {
     tryAuthenticate
 } from './controllers/requestAuthentication';
 import * as viewsApiController from './controllers/viewsApiController';
+import * as viewsUsageController from './controllers/viewUsageController';
 
 // TODO: brush up error handling and responses
 
@@ -36,6 +37,7 @@ export default app => {
     });
 
     viewsApiController.initialize(app);
+    viewsUsageController.initialize(app);
 
     app.get('*', (req, res) => {
         const HTML = `

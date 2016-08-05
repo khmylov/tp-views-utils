@@ -1,7 +1,7 @@
 import _ from 'lodash';
 import guard from '../../shared/utils/guard';
 
-class Target {
+class TpTarget {
     constructor({accountName, token}) {
         guard.notEmptyString(accountName);
         guard.notEmptyString(token);
@@ -15,7 +15,11 @@ class Target {
     }
 
     get url() {
-        return `https://${this._accountName}.tpondemand.com`;
+        return `https://${this.hostName}`;
+    }
+
+    get hostName() {
+        return `${this._accountName}.tpondemand.com`;
     }
 
     get token() {
@@ -34,4 +38,4 @@ class Target {
     }
 }
 
-export default Target;
+export default TpTarget;
