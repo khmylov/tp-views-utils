@@ -28,3 +28,15 @@ Run the app
 You push only sources to Heroku.
 There is `postinstall` npm script, which Heroku runs when building the app,
 so all bundling should be handled there.
+
+## Running with Docker
+
+Assuming a functional docker installation
+
+    docker build -t tp-views-utils .
+
+To run, mapping internal port to external OS
+
+    docker run -p 3000:3000 -it --rm --name tp-view-utils tp-view-utils
+
+
